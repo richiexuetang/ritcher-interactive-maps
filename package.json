@@ -1,5 +1,5 @@
 {
-  "name": "ts-nextjs-tailwind-starter",
+  "name": "ritcher-maps-v2",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -18,11 +18,20 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@babel/runtime-corejs3": "^7.22.5",
+    "@next/font": "^13.4.7",
+    "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
+    "@types/leaflet": "^1.9.3",
+    "@types/react-leaflet": "^3.0.0",
     "clsx": "^1.2.1",
+    "eslint-plugin-storybook": "^0.6.12",
+    "leaflet": "^1.9.4",
+    "leaflet-contextmenu": "^1.4.0",
     "next": "^13.4.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.9.0",
+    "react-icons": "^4.10.1",
+    "react-leaflet": "^4.2.1",
     "tailwind-merge": "^1.13.0"
   },
   "devDependencies": {
