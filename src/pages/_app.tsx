@@ -1,16 +1,41 @@
 import { AppProps } from 'next/app';
+import localFont from 'next/font/local';
 
 import '@/styles/globals.css';
-// !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
 
-/**
- * !STARTERCONF info
- * ? `Layout` component is called in every page using `np` snippets. If you have consistent layout across all page, you can add it here too
- */
+import { AppProvider } from '@/lib/context/app-context';
+
+const hylia = localFont({
+  src: [
+    {
+      path: '../../public/fonts/HyliaSerifBeta-Regular.otf',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-hylia',
+});
+
+const witcher = localFont({
+  src: [
+    {
+      path: '../../public/fonts/tw3-Regular.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-witcher',
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <div className={`${hylia.variable} ${witcher.variable}`}>
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
+    </div>
+  );
 }
 
 export default MyApp;

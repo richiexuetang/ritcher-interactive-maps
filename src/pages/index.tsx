@@ -1,10 +1,12 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
+import { gamesData } from '@/data/config/gameConfig';
+
+import Footer from '@/components/layout/Footer';
 import Layout from '@/components/layout/Layout';
-import ArrowLink from '@/components/links/ArrowLink';
 import ButtonLink from '@/components/links/ButtonLink';
-import UnderlineLink from '@/components/links/UnderlineLink';
-import UnstyledLink from '@/components/links/UnstyledLink';
+import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
 /**
@@ -14,58 +16,48 @@ import Seo from '@/components/Seo';
  * You can override the next-env if the type is important to you
  * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
  */
-import Vercel from '~/svg/Vercel.svg';
-
-// !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
-// Before you begin editing, follow all comments with `STARTERCONF`,
-// to customize the default configuration.
-
 export default function HomePage() {
+  const router = useRouter();
+
+  const handleNavigation = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    router.push('game/' + path);
+  };
+
   return (
     <Layout>
       {/* <Seo templateTitle='Home' /> */}
       <Seo />
 
       <main>
-        <section className='bg-white'>
-          <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
-            <Vercel className='text-5xl' />
-            <h1 className='mt-4'>
-              Next.js + Tailwind CSS + TypeScript Starter
-            </h1>
-            <p className='mt-2 text-sm text-gray-800'>
-              A starter for Next.js, Tailwind CSS, and TypeScript with Absolute
-              Import, Seo, Link component, pre-configured with Husky{' '}
-            </p>
-            <p className='mt-2 text-sm text-gray-700'>
-              <ArrowLink href='https://github.com/theodorusclarence/ts-nextjs-tailwind-starter'>
-                See the repository
-              </ArrowLink>
-            </p>
-
+        <section className='bg-primary-400'>
+          <div className='layout relative flex min-h-screen flex-col items-center justify-between py-12 text-center'>
+            <h1 className='text-primary-200 mt-4'>Games</h1>
             <ButtonLink className='mt-6' href='/components' variant='light'>
               See all components
             </ButtonLink>
-
-            <UnstyledLink
-              href='https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Ftheodorusclarence%2Fts-nextjs-tailwind-starter'
-              className='mt-4'
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                width='92'
-                height='32'
-                src='https://vercel.com/button'
-                alt='Deploy with Vercel'
-              />
-            </UnstyledLink>
-
-            <footer className='absolute bottom-2 text-gray-700'>
-              © {new Date().getFullYear()} By{' '}
-              <UnderlineLink href='https://theodorusclarence.com?ref=tsnextstarter'>
-                Theodorus Clarence
-              </UnderlineLink>
-            </footer>
+            <div className='mt-4 flex h-screen flex-wrap hover:cursor-pointer'>
+              {gamesData.map((data) => {
+                return (
+                  <div
+                    key={data.name}
+                    className='mx-2 flex flex-col'
+                    onClick={(e) => handleNavigation(e, data.path)}
+                  >
+                    <NextImage
+                      useSkeleton
+                      className='w-32 md:w-40'
+                      src={data.imagePath}
+                      width='180'
+                      height='180'
+                      alt='Icon'
+                    />
+                    <p className='bg-primary-100'>{data.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <Footer />
           </div>
         </section>
       </main>
