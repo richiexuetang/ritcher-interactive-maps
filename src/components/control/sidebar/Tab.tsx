@@ -6,7 +6,7 @@ const Tab = (props) => {
 
   return (
     <div id={props.id} className={`sidebar-pane${active}`}>
-      <h1 className='sidebar-header'>
+      <h1 className={`sidebar-header font-${props.font}`}>
         {props.header}
         <div className='sidebar-close' role='btn' onClick={props.onClose}>
           {closeIcon}

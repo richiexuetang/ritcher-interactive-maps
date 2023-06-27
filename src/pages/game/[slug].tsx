@@ -47,26 +47,31 @@ const GamePage = ({
 
   return (
     <Layout>
-      <div className='flex hover:cursor-pointer'>
-        {config.mapOptions.map((option: ImageDataType) => {
-          return (
-            <div
-              key={option.name}
-              className='mx-2 flex flex-col'
-              onClick={(e) => handleNavigation(e, option.path)}
-            >
-              <NextImage
-                useSkeleton
-                className='w-32 md:w-40'
-                src={option.imagePath}
-                width='180'
-                height='180'
-                alt='Icon'
-              />
-              <p className='bg-primary-100'>{option.name}</p>
-            </div>
-          );
-        })}
+      <div
+        className={`flex flex-col hover:cursor-pointer font-${config.font} bg-primary-300 h-screen items-center`}
+      >
+        <h1 className={`font-${config.font} pt-4`}>{config.title}</h1>
+        <div className='mt-8 flex'>
+          {config.mapOptions.map((option: ImageDataType) => {
+            return (
+              <div
+                key={option.name}
+                className='mx-2 flex flex-col'
+                onClick={(e) => handleNavigation(e, option.path)}
+              >
+                <NextImage
+                  useSkeleton
+                  className='w-60 md:w-64'
+                  src={option.imagePath}
+                  width='256'
+                  height='256'
+                  alt='Icon'
+                />
+                <p className='bg-primary-100 text-center'>{option.name}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Layout>
   );

@@ -11,20 +11,6 @@ export default function Document() {
           type='font/woff2'
           crossOrigin='anonymous'
         />
-        <link
-          rel='preload'
-          href='/fonts/tw3-Regular.ttf'
-          as='font'
-          type='font/ttf'
-          crossOrigin='anonymous'
-        />
-        <link
-          rel='preload'
-          href='/fonts/HyliaSerifBeta-Regular.otf'
-          as='font'
-          type='font/otf'
-          crossOrigin='anonymous'
-        />
       </Head>
       <body>
         <Main />

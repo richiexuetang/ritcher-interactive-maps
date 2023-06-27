@@ -14,6 +14,8 @@ export interface GameDataType {
 
 export interface ConfigDataType {
   name: string;
+  title: string;
+  font: string;
   mapOptions: ImageDataType[];
 }
 

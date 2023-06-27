@@ -3,6 +3,8 @@ import { ConfigDataType } from '@/types/config';
 const mapConfig: ConfigDataType[] = [
   {
     name: 'witcher3',
+    title: 'The Witcher 3: Wild Hunt',
+    font: 'witcher',
     mapOptions: [
       {
         name: 'White Orchard',
@@ -33,6 +35,8 @@ const mapConfig: ConfigDataType[] = [
   },
   {
     name: 'totk',
+    title: 'The Legend of Zelda: Tears of the Kingdom',
+    font: 'hylia',
     mapOptions: [
       {
         name: 'Hyrule Sky',

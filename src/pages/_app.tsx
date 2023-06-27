@@ -20,7 +20,7 @@ const hylia = localFont({
 const witcher = localFont({
   src: [
     {
-      path: '../../public/fonts/tw3-Regular.ttf',
+      path: '../../public/fonts/Mason-Regular.ttf',
       weight: '500',
       style: 'normal',
     },
@@ -30,7 +30,7 @@ const witcher = localFont({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${hylia.variable} ${witcher.variable}`}>
+    <div className={`${witcher.variable} ${hylia.variable} font-witcher`}>
       <AppProvider>
         <Component {...pageProps} />
       </AppProvider>

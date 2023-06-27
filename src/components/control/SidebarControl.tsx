@@ -4,23 +4,19 @@
 import React, { useEffect, useState } from 'react';
 import {
   FiChevronLeft,
-  FiChevronUp,
   FiCompass,
   FiHome,
   FiSearch,
   FiSettings,
 } from 'react-icons/fi';
 
-import clsxm from '@/lib/clsxm';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
-import { categoryIdNameMap } from '@/data/config/categoryItems';
-
+import CategoryGroup from '@/components/control/sidebar/CategoryGroup';
 import SearchResult from '@/components/control/sidebar/SearchResult';
 import Sidebar from '@/components/control/sidebar/Sidebar';
 import Tab from '@/components/control/sidebar/Tab';
 import UnderlineLink from '@/components/links/UnderlineLink';
-import NextImage from '@/components/NextImage';
 
 import { CategoryIdToCountT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
@@ -55,9 +51,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
       defaultValue: { [config.name]: [] },
     }
   );
-  const [completedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: {},
-  });
 
   const [_, setUserSettings] = useLocalStorageState('rm_user_settings', {
     defaultValue: { hideCompleted: true },
@@ -130,8 +123,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
     }
   }, [config.name, hiddenCategories, setHiddenCategories]);
 
-  const mapHiddenCategories: number[] = hiddenCategories[config.name];
-
   return (
     <section className={`Sidebar font-${font}`}>
       <Sidebar
@@ -145,7 +136,13 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
         panMapOnChange
         rehomeControls
       >
-        <Tab id='home' header='Filter Markers' icon={<FiHome />} active>
+        <Tab
+          id='home'
+          header='Filter Markers'
+          icon={<FiHome />}
+          active
+          font={font}
+        >
           <div className='flex flex-col'>
             <div className='flex justify-between py-4'>
               <button onClick={handleHideAll}>Hide All</button>
@@ -169,49 +166,28 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             </div>
           </div>
           {locationGroups.map(({ group, categoryId }) => {
-            let flag = false;
-            const hiddenFlag = mapHiddenCategories?.includes(categoryId);
             if (group !== prevGroup) {
               prevGroup = group;
-              flag = true;
+
+              const currentGroup = locationGroups.filter(
+                (item) => item.group === group
+              );
+
+              return (
+                <CategoryGroup
+                  key={group}
+                  categoryId={categoryId}
+                  group={group}
+                  setHide={setHide}
+                  categoryCounts={categoryCounts}
+                  currentGroup={currentGroup}
+                  config={config}
+                />
+              );
             }
-
-            return (
-              <div
-                key={categoryId}
-                className='flex flex-col py-1 hover:cursor-pointer'
-              >
-                {flag && (
-                  <div className='flex items-center'>
-                    <FiChevronUp className='mr-3' />
-                    <div className='py-3'>{group.toUpperCase()}</div>
-                  </div>
-                )}
-
-                <div
-                  className='flex flex-row justify-between'
-                  onClick={() => setHide(categoryId)}
-                >
-                  <NextImage
-                    useSkeleton
-                    src={`/images/icons/${categoryId}.png`}
-                    width='25'
-                    height='25'
-                    alt='Icon'
-                  />
-                  <p className={clsxm([hiddenFlag && 'line-through	'])}>
-                    {categoryIdNameMap[categoryId]}
-                  </p>
-                  <p className={clsxm([hiddenFlag && 'line-through	'])}>
-                    {completedCount[categoryId] || 0}/
-                    {categoryCounts[categoryId]}
-                  </p>
-                </div>
-              </div>
-            );
           })}
         </Tab>
-        <Tab id='props' header='Navigate' icon={<FiCompass />}>
+        <Tab id='props' header='Navigate' icon={<FiCompass />} font={font}>
           <div className='flex flex-wrap justify-center gap-2 align-middle'>
             {config?.subSelections.map((selection) => {
               return (
@@ -225,8 +201,8 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             })}
           </div>
         </Tab>
-        <Tab id='search' header='' icon={<FiSearch />}>
-          <div className='relative text-gray-600 focus-within:text-gray-400'>
+        <Tab id='search' header='' icon={<FiSearch />} font={font}>
+          <div className='text-primary-600 focus-within:text-primary-400 relative mt-4'>
             <span className='absolute inset-y-0 left-0 flex items-center pl-2'>
               <button
                 type='submit'
@@ -248,7 +224,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             <input
               type='search'
               name='q'
-              className='rounded-md bg-gray-900 py-2 pl-10 text-sm text-white focus:bg-white focus:text-gray-900 focus:outline-none'
+              className='bg-primary-900 focus:text-primary-900 w-full rounded-md py-2 pl-10 text-sm text-white focus:bg-white focus:outline-none'
               placeholder='Search...'
               onKeyUp={(e) => handleKeyPress(e)}
             />

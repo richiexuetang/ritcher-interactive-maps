@@ -5,7 +5,6 @@ import { gamesData } from '@/data/config/gameConfig';
 
 import Footer from '@/components/layout/Footer';
 import Layout from '@/components/layout/Layout';
-import ButtonLink from '@/components/links/ButtonLink';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
@@ -30,12 +29,9 @@ export default function HomePage() {
       <Seo />
 
       <main>
-        <section className='bg-primary-400'>
+        <section className='bg-primary-300'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-between py-12 text-center'>
-            <h1 className='text-primary-200 mt-4'>Games</h1>
-            <ButtonLink className='mt-6' href='/components' variant='light'>
-              See all components
-            </ButtonLink>
+            <h1 className='text-primary-200'>Games</h1>
             <div className='mt-4 flex h-screen flex-wrap hover:cursor-pointer'>
               {gamesData.map((data) => {
                 return (

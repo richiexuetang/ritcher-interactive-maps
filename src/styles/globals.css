@@ -187,7 +187,7 @@
   top: 0;
   bottom: 0;
   height: 100%;
-  background-color: #fff;
+  background-color: rgb(var(--tw-color-primary-200));
 }
 
 .sidebar-tab-button {
@@ -224,12 +224,12 @@
 .sidebar-tabs > li:hover,
 .sidebar-tabs > ul > li:hover {
   color: #000;
-  background-color: #eee;
+  background-color: rgb(var(--tw-color-primary-300));
 }
 
 .sidebar-tabs > li.active,
 .sidebar-tabs > ul > li.active {
-  color: #fff;
+  color: rgb(var(--tw-color-primary-200));
   background-color: var(--color-primary-400);
 }
 
@@ -267,7 +267,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgb(var(--tw-color-primary-200));
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -303,7 +303,7 @@
   padding: 0 20px;
   line-height: 40px;
   font-size: 14.4pt;
-  color: #fff;
+  color: rgb(var(--tw-color-primary-200));
   background-color: var(--color-primary-400);
 }
 
