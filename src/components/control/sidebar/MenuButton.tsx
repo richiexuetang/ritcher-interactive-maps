@@ -1,6 +1,7 @@
 import React from 'react';
 
-const MenuButton = (props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MenuButton = (props: any) => {
   const icon =
     props.icon === 'string' ? <i className={props.icon} /> : props.icon;
   const active =

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 
-const Tab = (props) => {
+const Tab = (props: any) => {
   const active = props.active ? ' active' : '';
   const closeIcon = closeIconSelector(props);
 
@@ -17,7 +18,7 @@ const Tab = (props) => {
   );
 };
 
-const closeIconSelector = (props) => {
+const closeIconSelector = (props: any) => {
   switch (typeof props.closeIcon) {
     case 'string':
       return <i className={props.closeIcon} />;

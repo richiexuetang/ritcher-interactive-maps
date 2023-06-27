@@ -6,9 +6,9 @@ const defaultMeta = {
   title: 'Interactive Maps',
   siteName: 'Interactive Maps',
   description:
-    'A starter for Next.js, Tailwind CSS, and TypeScript with Absolute Import, Seo, Link component, pre-configured with Husky',
+    'Interactive game map for RPGs such as tears of the kingdom and the witcher 3',
   /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
-  url: 'https://tsnext-tw.thcl.dev',
+  url: 'https://ritcher-map.vercel.app',
   type: 'website',
   robots: 'follow, index',
   /**
@@ -71,11 +71,10 @@ export default function Seo(props: SeoProps) {
             property='og:publish_date'
             content={meta.date}
           />
-          {/* // !STARTERCONF Remove or change to your name */}
           <meta
             name='author'
             property='article:author'
-            content='Theodorus Clarence'
+            content='Richard Tang'
           />
         </>
       )}

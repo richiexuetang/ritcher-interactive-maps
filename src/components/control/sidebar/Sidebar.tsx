@@ -1,11 +1,31 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+  useState,
+} from 'react';
 
 import MenuButton from './MenuButton';
 
-class Sidebar extends React.Component {
-  componentDidMount() {
-    if (this.props.rehomeControls) {
-      const { position } = this.props;
+interface SidebarPropsType {
+  rehomeControls: any;
+  position: any;
+  onClose: any;
+  onOpen: any;
+  closeIcon: any;
+  selected: any;
+  collapsed: boolean;
+  id: any;
+  map: any;
+}
+
+const Sidebar: React.FC<PropsWithChildren<SidebarPropsType>> = (props) => {
+  const [rootElement, setRootElement] = useState<any>(null);
+
+  useEffect(() => {
+    if (props.rehomeControls) {
+      const { position } = props;
       const selector = `.leaflet-${position}`;
       const controls = document.querySelectorAll(selector);
       const topControl = document.querySelector(`.leaflet-top${selector}`);
@@ -31,90 +51,84 @@ class Sidebar extends React.Component {
         leafletControlContainer?.appendChild(backupOriginalHome);
       }
 
-      controls.forEach((control) => this.rootElement?.appendChild(control));
+      controls.forEach((control) => rootElement?.appendChild(control));
     }
-  }
+  });
 
-  onClose = (e) => {
+  const onClose = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    if (this.props.onClose) {
-      this.props.onClose(e);
+    if (props.onClose) {
+      props.onClose(e);
     }
   };
 
-  onOpen = (e, tabid) => {
+  const onOpen = (e: any, tabid: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (this.props.onOpen) {
-      this.props.onOpen(tabid);
+    if (props.onOpen) {
+      props.onOpen(tabid);
     }
   };
 
-  renderPanes(children) {
+  const renderPanes = (children: any) => {
     return React.Children.map(children, (p) =>
       React.cloneElement(p, {
-        onClose: this.onClose.bind(this),
-        closeIcon: this.props.closeIcon,
-        active: p.props.id === this.props.selected,
-        position: this.props.position || 'left',
+        onClose: onClose.bind(this),
+        closeIcon: props.closeIcon,
+        active: p.props.id === props.selected,
+        position: props.position || 'left',
       })
     );
-  }
+  };
 
-  render() {
-    const position = ` sidebar-${this.props.position || 'left'}`;
-    const collapsed = this.props.collapsed ? ' collapsed' : '';
-    const tabs = React.Children.toArray(this.props.children);
-    const bottomtabs = tabs.filter((t) => t.props.anchor === 'bottom');
-    const toptabs = tabs.filter((t) => t.props.anchor !== 'bottom');
+  const position = ` sidebar-${props.position || 'left'}`;
+  const collapsed = props.collapsed ? ' collapsed' : '';
+  const tabs: ReactElement[] | any = React.Children.toArray(props.children);
+  const bottomtabs = tabs.filter((t: any) => t.props.anchor === 'bottom');
+  const toptabs = tabs.filter((t: any) => t.props.anchor !== 'bottom');
 
-    return (
-      <div
-        id={this.props.id || 'leaflet-sidebar'}
-        className={`sidebar leaflet-touch${position}${collapsed}`}
-        ref={(el) => {
-          this.rootElement = el;
-        }}
-      >
-        <div className='sidebar-tabs'>
-          <ul role='tablist'>
-            {toptabs.map((t) => (
-              <MenuButton
-                key={t.props.id}
-                id={t.props.id}
-                icon={t.props.icon}
-                disabled={t.props.disabled}
-                selected={this.props.selected}
-                collapsed={this.props.collapsed}
-                onClose={this.onClose}
-                onOpen={this.onOpen}
-                map={this.props.map || null}
-              />
-            ))}
-          </ul>
-          <ul role='tablist'>
-            {bottomtabs.map((t) => (
-              <MenuButton
-                key={t.props.id}
-                id={t.props.id}
-                icon={t.props.icon}
-                disabled={t.props.disabled}
-                selected={this.props.selected}
-                collapsed={this.props.collapsed}
-                onClose={this.onClose}
-                onOpen={this.onOpen}
-                map={this.props.map || null}
-              />
-            ))}
-          </ul>
-        </div>
-        <div className='sidebar-content'>
-          {this.renderPanes(this.props.children)}
-        </div>
+  return (
+    <div
+      id={props.id || 'leaflet-sidebar'}
+      className={`sidebar leaflet-touch${position}${collapsed}`}
+      ref={(el) => setRootElement(el)}
+    >
+      <div className='sidebar-tabs'>
+        <ul role='tablist'>
+          {toptabs.map((t: any) => (
+            <MenuButton
+              key={t.props.id}
+              id={t.props.id}
+              icon={t.props.icon}
+              disabled={t.props.disabled}
+              selected={props.selected}
+              collapsed={props.collapsed}
+              onClose={onClose}
+              onOpen={onOpen}
+              map={props.map || null}
+            />
+          ))}
+        </ul>
+        <ul role='tablist'>
+          {bottomtabs.map((t: any) => (
+            <MenuButton
+              key={t.props.id}
+              id={t.props.id}
+              icon={t.props.icon}
+              disabled={t.props.disabled}
+              selected={props.selected}
+              collapsed={props.collapsed}
+              onClose={onClose}
+              onOpen={onOpen}
+              map={props.map || null}
+            />
+          ))}
+        </ul>
       </div>
-    );
-  }
-}
+      <div className='sidebar-content'>{renderPanes(props.children)}</div>
+    </div>
+  );
+};
 
 export default Sidebar;

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import _mapInstanceProperty from '@babel/runtime-corejs3/core-js-stable/instance/map';
-import _Object$assign from '@babel/runtime-corejs3/core-js-stable/object/assign';
 import { LeafletProvider, useLeafletContext } from '@react-leaflet/core';
 import React, {
   useCallback,
@@ -13,8 +11,8 @@ import React, {
 
 import { useLayerControlContext } from './context';
 
-export default function createControlledLayer(addLayerToControl) {
-  return function ControlledLayer(props) {
+export default function createControlledLayer(addLayerToControl: any) {
+  return function ControlledLayer(props: any) {
     const context = useLeafletContext();
     const layerContext = useLayerControlContext();
     const propsRef = useRef(props);
@@ -24,9 +22,11 @@ export default function createControlledLayer(addLayerToControl) {
     const setLayer = _useState[1];
 
     const addLayer = useCallback(
-      function addLayerCallback(layerToAdd) {
+      function addLayerCallback(layerToAdd: any) {
+        const container = context.layerContainer || context.map;
+
         if (propsRef.current.checked) {
-          _mapInstanceProperty(context).addLayer(layerToAdd);
+          container.addLayer(layerToAdd);
         }
 
         addLayerToControl(
@@ -42,7 +42,7 @@ export default function createControlledLayer(addLayerToControl) {
     const removeLayer = useCallback(
       function removeLayerCallback(this: any, layerToRemove: any) {
         const _context$layersContro =
-          context.layersControl == null ? 0 : this.removeLayer(layerToRemove);
+          context.layersControl == null ? 0 : removeLayer(layerToRemove);
         setLayer(null);
       },
       [context]
@@ -51,7 +51,7 @@ export default function createControlledLayer(addLayerToControl) {
     const newContext = useMemo(
       function makeNewContext() {
         return context
-          ? _Object$assign({}, context, {
+          ? Object.assign({}, context, {
               layerContainer: {
                 addLayer,
                 removeLayer,
@@ -63,18 +63,20 @@ export default function createControlledLayer(addLayerToControl) {
     );
 
     useEffect(function update() {
+      const container = context.layerContainer || context.map;
+
       if (layer !== null && propsRef.current !== props) {
         if (
           props.checked === true &&
           (propsRef.current.checked == null ||
             propsRef.current.checked === false)
         ) {
-          _mapInstanceProperty(context).addLayer(layer);
+          container.addLayer(layer);
         } else if (
           propsRef.current.checked === true &&
           (props.checked == null || props.checked === false)
         ) {
-          _mapInstanceProperty(context).removeLayer(layer);
+          container.removeLayer(layer);
         }
 
         propsRef.current = props;
@@ -83,7 +85,7 @@ export default function createControlledLayer(addLayerToControl) {
       return function checker() {
         if (layer) {
           const _context$layersContro2 =
-            context.layersControl == null ? 0 : this.removeLayer(layer);
+            context.layersControl == null ? 0 : removeLayer(layer);
         }
       };
     });
