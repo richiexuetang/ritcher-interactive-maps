@@ -39,7 +39,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location }) => {
       setCompleted([...newCompleted]);
       setCompletedCount((prev) => ({
         ...prev,
-        [location.categoryId]: prev[location.categoryId] + 1,
+        [location.categoryId]: prev[location.categoryId] + 1 || 1,
       }));
     }
     setChecked(e.target.checked);

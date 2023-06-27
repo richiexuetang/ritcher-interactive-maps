@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import L, { LatLngBoundsExpression, LatLngExpression, Map } from 'leaflet';
+import { LatLngBoundsExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import { LayerGroup, Marker, TileLayer } from 'react-leaflet';
+import { LayerGroup, TileLayer } from 'react-leaflet';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
-import RMPopup from '@/components/popup/RMPopup';
-
 import { AreaConfigType } from '@/types/config';
 import { LocationGroupType, LocationType } from '@/types/location';
+
+const RMMarker = dynamic(() => import('@/components/marker/RMMarker'), {
+  ssr: false,
+});
 
 const PathLayer = dynamic(() => import('@/components/layer/path/PathLayer'), {
   ssr: false,
@@ -107,23 +109,12 @@ const AppMap = (props: {
 
                             if (location?.coordinate) {
                               return (
-                                <Marker
-                                  ref={(ref) =>
-                                    (markerRefs[location._id] = ref)
-                                  }
-                                  key={`${location._id} ${group}`}
-                                  position={
-                                    location.coordinate as LatLngExpression
-                                  }
-                                  icon={L.icon({
-                                    iconUrl: `/images/icons/${location.categoryId}.png`,
-                                    iconSize: [35, 45],
-                                    iconAnchor: [17, 45],
-                                  })}
-                                  zIndexOffset={rank}
-                                >
-                                  <RMPopup location={location} />
-                                </Marker>
+                                <RMMarker
+                                  key={location._id}
+                                  markerRefs={markerRefs}
+                                  location={location}
+                                  rank={rank}
+                                />
                               );
                             }
                           })}

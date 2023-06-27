@@ -55,6 +55,13 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
       defaultValue: { [config.name]: [] },
     }
   );
+  const [completedCount] = useLocalStorageState('rm_completed_count', {
+    defaultValue: {},
+  });
+
+  const [_, setUserSettings] = useLocalStorageState('rm_user_settings', {
+    defaultValue: { hideCompleted: true },
+  });
 
   let prevGroup = '';
 
@@ -64,6 +71,26 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
 
   const onOpen = (id: string) => {
     setOpenTab(id);
+  };
+
+  const handleHideAll = () => {
+    const hiddenState = hiddenCategories[config.name] || [];
+    locationGroups.map((group) => {
+      if (!hiddenState.includes(group.categoryId)) {
+        hiddenState.push(group.categoryId);
+      }
+    });
+    setHiddenCategories((prev) => ({
+      ...prev,
+      [config.name]: [...hiddenState],
+    }));
+  };
+
+  const handleShowAll = () => {
+    setHiddenCategories((prev) => ({
+      ...prev,
+      [config.name]: [],
+    }));
   };
 
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -119,9 +146,31 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
         rehomeControls
       >
         <Tab id='home' header='Filter Markers' icon={<FiHome />} active>
+          <div className='flex flex-col'>
+            <div className='flex justify-between py-4'>
+              <button onClick={handleHideAll}>Hide All</button>
+              <button onClick={handleShowAll}>Show All</button>
+            </div>
+            <div className='flex justify-between py-4'>
+              <button
+                onClick={() =>
+                  setUserSettings((prev) => ({ ...prev, hideCompleted: true }))
+                }
+              >
+                Hide Completed
+              </button>
+              <button
+                onClick={() =>
+                  setUserSettings((prev) => ({ ...prev, hideCompleted: false }))
+                }
+              >
+                Show Completed
+              </button>
+            </div>
+          </div>
           {locationGroups.map(({ group, categoryId }) => {
             let flag = false;
-            const hiddenFlag = mapHiddenCategories.includes(categoryId);
+            const hiddenFlag = mapHiddenCategories?.includes(categoryId);
             if (group !== prevGroup) {
               prevGroup = group;
               flag = true;
@@ -154,6 +203,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
                     {categoryIdNameMap[categoryId]}
                   </p>
                   <p className={clsxm([hiddenFlag && 'line-through	'])}>
+                    {completedCount[categoryId] || 0}/
                     {categoryCounts[categoryId]}
                   </p>
                 </div>
