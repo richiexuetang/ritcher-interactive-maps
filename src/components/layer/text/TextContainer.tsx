@@ -29,7 +29,7 @@ const TextContainer: React.FC<TextContainerPropsType> = ({
     className: 'map-label',
     iconSize: [100, 12],
     iconAnchor: [50, 12],
-    html: `<span>${content}</span>`,
+    html: `${content}`,
   });
 
   useMapEvents({

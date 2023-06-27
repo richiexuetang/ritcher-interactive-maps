@@ -1,18 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRouter } from 'next/router';
 import React from 'react';
+
+import NextImage from '@/components/NextImage';
 
 const Tab = (props: any) => {
   const active = props.active ? ' active' : '';
   const closeIcon = closeIconSelector(props);
+  const router = useRouter();
 
   return (
     <div id={props.id} className={`sidebar-pane${active}`}>
-      <h1 className={`sidebar-header font-${props.font}`}>
+      <h1 className={`sidebar-header font-${props.font} !bg-primary-950`}>
         {props.header}
         <div className='sidebar-close' role='btn' onClick={props.onClose}>
           {closeIcon}
         </div>
       </h1>
+      <div
+        className='item-center hover:cursor-pointer'
+        onClick={() => router.push('/game/' + props.gameSlug)}
+      >
+        <NextImage
+          useSkeleton
+          src={`/images/logos/${props.gameSlug}/logo.png`}
+          width='310'
+          height='60'
+          alt='Icon'
+        />
+      </div>
       {props.children}
     </div>
   );

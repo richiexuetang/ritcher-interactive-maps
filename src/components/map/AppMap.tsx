@@ -125,7 +125,7 @@ const AppMap = (props: {
               )}
             </LayerControl>
             <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
-            <PathLayer pathMarkers={pathMarkers} />
+            <PathLayer pathMarkers={pathMarkers} config={config} />
           </>
         )}
       </RMMapContainer>

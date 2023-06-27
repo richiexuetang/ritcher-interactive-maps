@@ -48,7 +48,7 @@ const GamePage = ({
   return (
     <Layout>
       <div
-        className={`flex flex-col hover:cursor-pointer font-${config.font} bg-primary-300 h-screen items-center`}
+        className={`flex flex-col font-${config.font} bg-primary-300 h-screen items-center`}
       >
         <h1 className={`font-${config.font} pt-4`}>{config.title}</h1>
         <div className='mt-8 flex'>
@@ -61,13 +61,15 @@ const GamePage = ({
               >
                 <NextImage
                   useSkeleton
-                  className='w-60 md:w-64'
+                  className='w-60 hover:cursor-pointer md:w-64 '
                   src={option.imagePath}
                   width='256'
                   height='256'
                   alt='Icon'
                 />
-                <p className='bg-primary-100 text-center'>{option.name}</p>
+                <p className='bg-primary-100 text-center hover:cursor-pointer'>
+                  {option.name}
+                </p>
               </div>
             );
           })}

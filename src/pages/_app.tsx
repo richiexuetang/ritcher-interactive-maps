@@ -28,7 +28,9 @@ const witcher = localFont({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className={`${witcher.variable} ${hylia.variable} font-witcher`}>
+    <div
+      className={`font-primary ${witcher.variable} ${hylia.variable} font-witcher`}
+    >
       <Component {...pageProps} />
     </div>
   );

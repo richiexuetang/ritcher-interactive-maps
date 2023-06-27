@@ -12,6 +12,7 @@ import {
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
+import TextButton from '@/components/buttons/TextButton';
 import CategoryGroup from '@/components/control/sidebar/CategoryGroup';
 import SearchResult from '@/components/control/sidebar/SearchResult';
 import Sidebar from '@/components/control/sidebar/Sidebar';
@@ -138,31 +139,38 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
       >
         <Tab
           id='home'
-          header='Filter Markers'
+          header=''
           icon={<FiHome />}
           active
           font={font}
+          gameSlug={config.gameSlug}
         >
           <div className='flex flex-col'>
             <div className='flex justify-between py-4'>
-              <button onClick={handleHideAll}>Hide All</button>
-              <button onClick={handleShowAll}>Show All</button>
+              <TextButton className='text-primary-200' onClick={handleHideAll}>
+                Hide All
+              </TextButton>
+              <TextButton className='text-primary-200' onClick={handleShowAll}>
+                Show All
+              </TextButton>
             </div>
             <div className='flex justify-between py-4'>
-              <button
+              <TextButton
+                className='text-primary-200'
                 onClick={() =>
                   setUserSettings((prev) => ({ ...prev, hideCompleted: true }))
                 }
               >
                 Hide Completed
-              </button>
-              <button
+              </TextButton>
+              <TextButton
+                className='text-primary-200'
                 onClick={() =>
                   setUserSettings((prev) => ({ ...prev, hideCompleted: false }))
                 }
               >
                 Show Completed
-              </button>
+              </TextButton>
             </div>
           </div>
           {locationGroups.map(({ group, categoryId }) => {
@@ -187,13 +195,20 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             }
           })}
         </Tab>
-        <Tab id='props' header='Navigate' icon={<FiCompass />} font={font}>
+        <Tab
+          id='props'
+          header=''
+          icon={<FiCompass />}
+          font={font}
+          gameSlug={config.gameSlug}
+        >
           <div className='flex flex-wrap justify-center gap-2 align-middle'>
             {config?.subSelections.map((selection) => {
               return (
                 <UnderlineLink
                   key={selection.name}
                   href={`/map/${selection.to}`}
+                  className='text-primary-200'
                 >
                   {selection.name}
                 </UnderlineLink>
@@ -201,7 +216,13 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             })}
           </div>
         </Tab>
-        <Tab id='search' header='' icon={<FiSearch />} font={font}>
+        <Tab
+          id='search'
+          header=''
+          icon={<FiSearch />}
+          font={font}
+          gameSlug={config.gameSlug}
+        >
           <div className='text-primary-600 focus-within:text-primary-400 relative mt-4'>
             <span className='absolute inset-y-0 left-0 flex items-center pl-2'>
               <button
@@ -224,7 +245,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             <input
               type='search'
               name='q'
-              className='bg-primary-900 focus:text-primary-900 w-full rounded-md py-2 pl-10 text-sm text-white focus:bg-white focus:outline-none'
+              className='bg-primary-700 focus:text-primary-700 text-primary-200 focus:bg-primary-200 w-full rounded-md py-2 pl-10 text-sm focus:outline-none'
               placeholder='Search...'
               onKeyUp={(e) => handleKeyPress(e)}
             />

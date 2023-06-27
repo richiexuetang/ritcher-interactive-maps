@@ -83,7 +83,7 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
   const mapHiddenCategories: number[] = hiddenCategories[config.name];
 
   return (
-    <div className='flex flex-col py-1 hover:cursor-pointer'>
+    <div className='text-primary-200 flex flex-col py-1 hover:cursor-pointer'>
       <div className='flex items-center'>
         {collapsed ? (
           <FiChevronUp className='mr-3' onClick={() => setCollapsed(false)} />

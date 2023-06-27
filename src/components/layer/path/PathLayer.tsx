@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Path from './Path';
 
-const PolyLines = (props: { pathMarkers: any }) => {
-  const { pathMarkers } = props;
+import { AreaConfigType } from '@/types/config';
+
+const PathLayer = (props: { pathMarkers: any; config: AreaConfigType }) => {
+  const { pathMarkers, config } = props;
 
   return (
     <>
@@ -11,10 +13,13 @@ const PolyLines = (props: { pathMarkers: any }) => {
           return (
             <Path
               key={`${parentId} + ${i}`}
-              path={path}
-              parentId={parentId}
-              categoryId={categoryId}
-              id={_id}
+              pathInfo={{
+                path: path,
+                parentId: parentId,
+                categoryId: categoryId,
+                id: _id,
+              }}
+              config={config}
             />
           );
         })}
@@ -22,4 +27,4 @@ const PolyLines = (props: { pathMarkers: any }) => {
   );
 };
 
-export default PolyLines;
+export default PathLayer;

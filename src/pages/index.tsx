@@ -41,10 +41,10 @@ export default function HomePage() {
                   >
                     <NextImage
                       useSkeleton
-                      className='w-32 md:w-40'
+                      className='w-60 hover:cursor-pointer md:w-64 '
                       src={data.imagePath}
-                      width='180'
-                      height='180'
+                      width='256'
+                      height='256'
                       alt='Icon'
                     />
                     <p className='bg-primary-100'>{data.name}</p>
