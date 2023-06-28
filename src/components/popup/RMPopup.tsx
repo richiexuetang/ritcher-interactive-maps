@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Popup } from 'react-leaflet';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
@@ -18,9 +18,12 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
   const [completed, setCompleted] = useLocalStorageState('rm_completed', {
     defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
   });
-  const [_, setCompletedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: { [config.name]: { [location.categoryId]: 0 } },
-  });
+  const [completedCount, setCompletedCount] = useLocalStorageState(
+    'rm_completed_count',
+    {
+      defaultValue: { [config.name]: { [location.categoryId]: 0 } },
+    }
+  );
 
   const { markerName, categoryId, _id, description } = location;
   const [checked, setChecked] = useState<boolean>(
@@ -57,6 +60,14 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
     setChecked(e.target.checked);
   };
 
+  useEffect(() => {
+    if (!completedCount[config.name]) {
+      setCompletedCount((prev) => ({
+        ...prev,
+        [config.name]: { [location.categoryId]: 0 },
+      }));
+    }
+  });
   return (
     <Popup className='rm-popup'>
       <p className='font-hylia text-lg'>{markerName}</p>
