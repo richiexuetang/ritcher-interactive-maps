@@ -80,11 +80,11 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     },
   ];
 
-  return (
-    visible && (
-      <PathDecorator patterns={arrow} polyline={path} visible={visible} />
-    )
-  );
+  if (visible) {
+    return <PathDecorator patterns={arrow} polyline={path} visible={visible} />;
+  } else {
+    return null;
+  }
 };
 
 export default Path;
