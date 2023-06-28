@@ -8,7 +8,7 @@ import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import NextImage from '@/components/NextImage';
 
-import { CategoryIdToCountT } from '@/types/category';
+import { CategoryIdToCountT, MapToCategoryIdCountT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
 import { LocationGroupType } from '@/types/location';
 
@@ -38,7 +38,7 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
   );
 
   const [completedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: {} as CategoryIdToCountT,
+    defaultValue: { [config.name]: {} } as MapToCategoryIdCountT,
   });
 
   const handleGroupToggle = () => {
@@ -116,8 +116,10 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
                 {categoryIdNameMap[member.categoryId]}
               </p>
               <p className={clsxm([hiddenFlag && 'line-through	'])}>
-                {completedCount[member.categoryId] || 0}/
-                {categoryCounts[member.categoryId]}
+                {(completedCount[config.name] &&
+                  completedCount[config.name][member.categoryId]) ||
+                  0}
+                /{categoryCounts[member.categoryId]}
               </p>
             </div>
           );

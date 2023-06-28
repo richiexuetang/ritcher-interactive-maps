@@ -116,6 +116,7 @@ const AppMap = (props: {
                                   markerRefs={markerRefs}
                                   location={location}
                                   rank={rank}
+                                  config={config}
                                 />
                               );
                             }

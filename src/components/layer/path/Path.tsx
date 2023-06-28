@@ -4,6 +4,7 @@ import { Polyline } from 'react-leaflet';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
+import { MapToCompletedT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
 import { PathType } from '@/types/location';
 
@@ -18,10 +19,10 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
 
   const [completedMarkers, setCompletedMarkers] = useLocalStorageState(
     'rm_completed',
-    { defaultValue: [] as string[] }
+    { defaultValue: { [config.name]: [] } as MapToCompletedT }
   );
   const [_, setCompletedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: { [categoryId]: 0 },
+    defaultValue: { [config.name]: { [categoryId]: 0 } },
   });
   const [hiddenCategories] = useLocalStorageState('rm_hidden_categories', {
     defaultValue: { [config.name]: [] as number[] },
@@ -32,13 +33,19 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
 
   useEffect(() => {
     if (
-      completedMarkers?.includes(parentId) &&
-      !completedMarkers?.includes(id)
+      completedMarkers[config.name]?.includes(parentId) &&
+      !completedMarkers[config.name]?.includes(id)
     ) {
-      setCompletedMarkers((prev) => [...prev, id]);
+      setCompletedMarkers((prev) => ({
+        ...prev,
+        [config.name]: [...prev[config.name], id],
+      }));
       setCompletedCount((prev) => ({
         ...prev,
-        [categoryId]: prev[categoryId] + 1,
+        [config.name]: {
+          ...prev[config.name],
+          [categoryId]: prev[config.name][categoryId] + 1,
+        },
       }));
     }
   }, [
@@ -48,9 +55,10 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     categoryId,
     setCompletedCount,
     setCompletedMarkers,
+    config.name,
   ]);
 
-  return !completedMarkers?.includes(id) &&
+  return !completedMarkers[config.name]?.includes(id) &&
     !hiddenCategories[config.name]?.includes(categoryId) ? (
     <Polyline positions={[start, end]} color='white' weight={1} />
   ) : null;

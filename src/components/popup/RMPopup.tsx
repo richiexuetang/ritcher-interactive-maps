@@ -5,41 +5,53 @@ import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
+import { MapToCompletedT } from '@/types/category';
+import { AreaConfigType } from '@/types/config';
 import { LocationType } from '@/types/location';
 
 interface RMPopupPropsType {
   location: LocationType;
+  config: AreaConfigType;
 }
 
-const RMPopup: React.FC<RMPopupPropsType> = ({ location }) => {
+const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
   const [completed, setCompleted] = useLocalStorageState('rm_completed', {
-    defaultValue: [] as string[],
+    defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
   });
   const [_, setCompletedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: { [location.categoryId]: 0 },
+    defaultValue: { [config.name]: { [location.categoryId]: 0 } },
   });
 
   const { markerName, categoryId, _id, description } = location;
-  const [checked, setChecked] = useState<boolean>(completed?.includes(_id));
+  const [checked, setChecked] = useState<boolean>(
+    completed[config.name]?.includes(_id)
+  );
 
   const handleCompletionCheck = (
     e: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => {
-    const newCompleted = completed;
+    const newCompleted = completed[config.name] || [];
     if (!e.target.checked) {
-      const lst = completed.filter((item) => item !== id);
-      setCompleted([...lst]);
+      const lst = completed[config.name]?.filter((item) => item !== id) || [];
+      setCompleted((prev) => ({ ...prev, [config.name]: [...lst] }));
       setCompletedCount((prev) => ({
         ...prev,
-        [location.categoryId]: prev[location.categoryId] - 1,
+        [config.name]: {
+          ...prev[config.name],
+          [location.categoryId]: prev[config.name][location.categoryId] - 1,
+        },
       }));
     } else {
       newCompleted.push(id);
-      setCompleted([...newCompleted]);
+      setCompleted((prev) => ({ ...prev, [config.name]: [...newCompleted] }));
       setCompletedCount((prev) => ({
         ...prev,
-        [location.categoryId]: prev[location.categoryId] + 1 || 1,
+        [config.name]: {
+          ...prev[config.name],
+          [location.categoryId]:
+            prev[config.name][location.categoryId] + 1 || 1,
+        },
       }));
     }
     setChecked(e.target.checked);

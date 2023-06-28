@@ -7,19 +7,24 @@ import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import RMPopup from '@/components/popup/RMPopup';
 
+import { MapToCompletedT } from '@/types/category';
+import { AreaConfigType } from '@/types/config';
+
 interface RMMarkerPropsType {
   markerRefs: any;
   location: any;
   rank: number;
+  config: AreaConfigType;
 }
 
 const RMMarker: React.FC<RMMarkerPropsType> = ({
   markerRefs,
   location,
   rank,
+  config,
 }) => {
   const [completedMarkers] = useLocalStorageState('rm_completed', {
-    defaultValue: [] as string[],
+    defaultValue: { [config.name]: [] } as MapToCompletedT,
   });
 
   const [userSettings] = useLocalStorageState('rm_user_settings', {
@@ -30,10 +35,10 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   const [hideMarker, setHideMarker] = useState(false);
 
   useEffect(() => {
-    if (completedMarkers?.includes(location._id) && !completed) {
+    if (completedMarkers[config.name]?.includes(location._id) && !completed) {
       setCompleted(true);
     }
-  }, [completedMarkers, completed, setCompleted, location._id]);
+  }, [completedMarkers, completed, setCompleted, location._id, config.name]);
 
   useEffect(() => {
     if (userSettings.hideCompleted && completed) {
@@ -56,7 +61,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
       })}
       zIndexOffset={rank}
     >
-      <RMPopup location={location} />
+      <RMPopup location={location} config={config} />
     </Marker>
   ) : null;
 };
