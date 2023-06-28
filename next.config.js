@@ -3,6 +3,9 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
+  env: {
+    BASE_URL: process.env.NEXT_PUBLIC_APP_URL,
+  },
   async headers() {
     return [
       {

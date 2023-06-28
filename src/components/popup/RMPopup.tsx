@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FiLink } from 'react-icons/fi';
 import { Popup } from 'react-leaflet';
 
+import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
+
+import IconButton from '@/components/buttons/IconButton';
 
 import { MapToCompletedT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
@@ -12,9 +18,18 @@ import { LocationType } from '@/types/location';
 interface RMPopupPropsType {
   location: LocationType;
   config: AreaConfigType;
+  triggerPopup: boolean;
+  setTriggerPopup: any;
+  markerRefs: any;
 }
 
-const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
+const RMPopup: React.FC<RMPopupPropsType> = ({
+  location,
+  config,
+  triggerPopup,
+  setTriggerPopup,
+  markerRefs,
+}) => {
   const [completed, setCompleted] = useLocalStorageState('rm_completed', {
     defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
   });
@@ -29,6 +44,8 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
   const [checked, setChecked] = useState<boolean>(
     completed[config.name]?.includes(_id)
   );
+  const [_, copy] = useCopyToClipboard();
+  const pathname = usePathname();
 
   const handleCompletionCheck = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -61,6 +78,14 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
   };
 
   useEffect(() => {
+    if (triggerPopup) {
+      markerRefs[location._id]?.openPopup();
+      setTriggerPopup(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerPopup, markerRefs]);
+
+  useEffect(() => {
     if (!completedCount[config.name]) {
       setCompletedCount((prev) => ({
         ...prev,
@@ -68,10 +93,25 @@ const RMPopup: React.FC<RMPopupPropsType> = ({ location, config }) => {
       }));
     }
   });
+
+  const handleCopyLink = () => {
+    copy(`${process.env.BASE_URL}${pathname}?markerId=${location._id}`);
+  };
+
   return (
     <Popup className='rm-popup'>
-      <p className='font-hylia text-lg'>{markerName}</p>
-      <p>{categoryIdNameMap[categoryId]}</p>
+      <div className='flex'>
+        <div className='flex flex-col'>
+          <p className='font-hylia text-lg'>{markerName}</p>
+          <p>{categoryIdNameMap[categoryId]}</p>
+        </div>
+        <IconButton
+          icon={FiLink}
+          className='ml-5 border-none bg-transparent'
+          onClick={handleCopyLink}
+        />
+      </div>
+
       {description && (
         <div
           key={_id}

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LatLngExpression } from 'leaflet';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Marker } from 'react-leaflet';
+import { Marker, useMap } from 'react-leaflet';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
@@ -23,6 +24,10 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   rank,
   config,
 }) => {
+  const map = useMap();
+  const params = useSearchParams();
+  const markerSearchParam = params.get('markerId');
+
   const [completedMarkers] = useLocalStorageState('rm_completed', {
     defaultValue: { [config.name]: [] } as MapToCompletedT,
   });
@@ -33,6 +38,20 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
 
   const [completed, setCompleted] = useState(false);
   const [hideMarker, setHideMarker] = useState(false);
+  const [triggerPopup, setTriggerPopup] = useState(false);
+
+  useEffect(() => {
+    if (markerSearchParam && markerSearchParam === location._id) {
+      map.flyTo(location?.coordinate, map.getMaxZoom(), {
+        animate: true,
+        duration: 0.5,
+      });
+
+      setTriggerPopup(true);
+      window.history.replaceState(null, '', `/map/${config.name}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [markerSearchParam]);
 
   useEffect(() => {
     if (completedMarkers[config.name]?.includes(location._id) && !completed) {
@@ -61,7 +80,13 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
       })}
       zIndexOffset={rank}
     >
-      <RMPopup location={location} config={config} />
+      <RMPopup
+        location={location}
+        config={config}
+        triggerPopup={triggerPopup}
+        setTriggerPopup={setTriggerPopup}
+        markerRefs={markerRefs}
+      />
     </Marker>
   ) : null;
 };
