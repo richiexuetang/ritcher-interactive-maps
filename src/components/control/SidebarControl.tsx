@@ -245,12 +245,12 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
             <input
               type='search'
               name='q'
-              className='bg-primary-700 focus:text-primary-700 text-primary-200 focus:bg-primary-200 w-full rounded-md py-2 pl-10 text-sm focus:outline-none'
+              className='bg-primary-200 text-primary-200 focus:bg-primary-200 w-full rounded-md py-2 pl-10 text-sm focus:text-black focus:outline-none'
               placeholder='Search...'
               onKeyUp={(e) => handleKeyPress(e)}
             />
           </div>
-          <div className='overflow-scroll hover:cursor-pointer'>
+          <div className='text-primary-100 overflow-scroll hover:cursor-pointer'>
             {searching && <div>Searching for markers...</div>}
             {searchResults?.map((result) => (
               <SearchResult

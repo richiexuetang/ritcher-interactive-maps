@@ -23,6 +23,9 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
   const [_, setCompletedCount] = useLocalStorageState('rm_completed_count', {
     defaultValue: { [categoryId]: 0 },
   });
+  const [hiddenCategories] = useLocalStorageState('rm_hidden_categories', {
+    defaultValue: { [config.name]: [] as number[] },
+  });
 
   const start = [path[0][0], path[0][1]] as LatLngExpression;
   const end = [path[1][0], path[1][1]] as LatLngExpression;
@@ -47,7 +50,8 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     setCompletedMarkers,
   ]);
 
-  return !completedMarkers?.includes(id) ? (
+  return !completedMarkers?.includes(id) &&
+    !hiddenCategories[config.name]?.includes(categoryId) ? (
     <Polyline positions={[start, end]} color='white' weight={1} />
   ) : null;
 };

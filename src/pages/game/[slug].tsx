@@ -5,6 +5,7 @@ import mapConfig from '@/data/config/mapConfig';
 
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
+import Seo from '@/components/Seo';
 
 import { ConfigDataType, ImageDataType } from '@/types/config';
 
@@ -47,6 +48,10 @@ const GamePage = ({
 
   return (
     <Layout>
+      <Seo
+        templateTitle={`Interactive Map | ${config.name}`}
+        faviconPath={config.name}
+      />
       <div
         className={`flex flex-col font-${config.font} bg-primary-300 h-screen items-center`}
       >

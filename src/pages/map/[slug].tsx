@@ -118,7 +118,10 @@ const MapPage = ({
 
   return (
     <>
-      <Seo templateTitle={`Interactive Map | ${mapConfigInfo.name}`} />
+      <Seo
+        templateTitle={`Interactive Map | ${mapConfigInfo.name}`}
+        faviconPath={config.gameSlug}
+      />
       {loading ? (
         <div>Loading...</div>
       ) : (

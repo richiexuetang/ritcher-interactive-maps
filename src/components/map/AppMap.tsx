@@ -2,8 +2,9 @@
 import { LatLngBoundsExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import { LayerGroup, TileLayer } from 'react-leaflet';
+import { LayerGroup, Marker, TileLayer } from 'react-leaflet';
 
+import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { AreaConfigType } from '@/types/config';
@@ -64,6 +65,7 @@ const AppMap = (props: {
     textOverlay,
     pathMarkers,
   } = props;
+  const [_, copy] = useCopyToClipboard();
 
   const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
     'rm_hidden_categories',
@@ -126,6 +128,21 @@ const AppMap = (props: {
             </LayerControl>
             <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
             <PathLayer pathMarkers={pathMarkers} config={config} />
+            <Marker
+              position={[0.6922458720270068, -0.6505778088279058]}
+              draggable
+              icon={L.icon({
+                iconUrl: `/images/icons/69.png`,
+                iconSize: [35, 45],
+                iconAnchor: [17, 45],
+              })}
+              eventHandlers={{
+                dragend: (e) => {
+                  const pos = e.target._latlng;
+                  copy(`[${pos.lat}, ${pos.lng}]`);
+                },
+              }}
+            />
           </>
         )}
       </RMMapContainer>

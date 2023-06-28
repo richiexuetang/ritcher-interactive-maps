@@ -25,10 +25,11 @@ const TextContainer: React.FC<TextContainerPropsType> = ({
     map.getZoom() <= minZoom && map.getZoom() >= maxZoom
   );
 
+  const iconWidth = content.length * 10;
   const icon = divIcon({
     className: 'map-label',
-    iconSize: [100, 12],
-    iconAnchor: [50, 12],
+    iconSize: [iconWidth, 12],
+    iconAnchor: [iconWidth / 2, 12],
     html: `${content}`,
   });
 

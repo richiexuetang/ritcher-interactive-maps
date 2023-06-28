@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Literata
+- Font Author: Copyright 2017 The Literata Project Authors (https://github.com/googlefonts/literata)
+- Font Source: http://fonts.gstatic.com/s/literata/v35/or3PQ6P12-iJxAIgLa78DkrbXsDgk0oVDaDPYLanFLHpPf2TbBG_F_bcTWCWp8g.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))

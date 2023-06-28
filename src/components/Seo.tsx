@@ -21,6 +21,7 @@ const defaultMeta = {
 type SeoProps = {
   date?: string;
   templateTitle?: string;
+  faviconPath?: string;
 } & Partial<typeof defaultMeta>;
 
 export default function Seo(props: SeoProps) {
@@ -29,9 +30,42 @@ export default function Seo(props: SeoProps) {
     ...defaultMeta,
     ...props,
   };
+  const { faviconPath = '' } = props;
+  const faviconPathPrefix = faviconPath ? '/images/favicons' : '/favicon';
+
   meta['title'] = props.templateTitle
     ? `${props.templateTitle} | ${meta.siteName}`
     : meta.title;
+
+  const favicons: Array<React.ComponentPropsWithoutRef<'link'>> = [
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      href: `${faviconPathPrefix}/${faviconPath}/apple-touch-icon.png`,
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      href: `${faviconPathPrefix}/${faviconPath}/favicon-32x32.png`,
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      href: `${faviconPathPrefix}/${faviconPath}/favicon-16x16.png`,
+    },
+    { rel: 'manifest', href: '/favicon/site.webmanifest' },
+    {
+      rel: 'mask-icon',
+      href: '/favicon/safari-pinned-tab.svg',
+      color: '#00e887',
+    },
+    {
+      rel: 'shortcut icon',
+      href: `${faviconPathPrefix}/${faviconPath}/favicon.ico`,
+    },
+  ];
 
   // Use siteName if there is templateTitle
   // but show full title if there is none
@@ -89,32 +123,3 @@ export default function Seo(props: SeoProps) {
     </Head>
   );
 }
-
-// !STARTERCONF this is the default favicon, you can generate your own from https://realfavicongenerator.net/
-// ! then replace the whole /public/favicon folder and favicon.ico
-const favicons: Array<React.ComponentPropsWithoutRef<'link'>> = [
-  {
-    rel: 'apple-touch-icon',
-    sizes: '180x180',
-    href: '/favicon/apple-touch-icon.png',
-  },
-  {
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '32x32',
-    href: '/favicon/favicon-32x32.png',
-  },
-  {
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '16x16',
-    href: '/favicon/favicon-16x16.png',
-  },
-  { rel: 'manifest', href: '/favicon/site.webmanifest' },
-  {
-    rel: 'mask-icon',
-    href: '/favicon/safari-pinned-tab.svg',
-    color: '#00e887',
-  },
-  { rel: 'shortcut icon', href: '/favicon/favicon.ico' },
-];

@@ -2,8 +2,12 @@
 import React from 'react';
 import * as ReactLeaflet from 'react-leaflet';
 import '@/lib/leaflet/smooth-wheel-zoom.js';
+import 'leaflet-contextmenu';
 
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 import 'leaflet/dist/leaflet.css';
+
+import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 
 const { MapContainer } = ReactLeaflet;
 
@@ -18,6 +22,13 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
   config,
   setMap,
 }) => {
+  const [_, copy] = useCopyToClipboard();
+
+  const addMarker = (e: any) => {
+    const newPos = e.latlng;
+    copy(`${newPos.lat}, ${newPos.lng}`);
+  };
+
   return (
     <MapContainer
       style={{ background: 'black', height: '100vh', width: '100vw' }}
@@ -31,6 +42,13 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
       bounds={config.bounds}
       minZoom={config.minZoom}
       maxZoom={config.maxZoom}
+      contextMenu={true}
+      contextmenuItems={[
+        {
+          text: 'Add marker',
+          callback: (e: any) => addMarker(e),
+        },
+      ]}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       smoothWheelZoom={true}
