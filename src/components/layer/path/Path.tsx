@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '@/lib/leaflet/path/L.Symbol.js';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
@@ -22,6 +22,7 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     'rm_completed',
     { defaultValue: { [config.name]: [] } as MapToCompletedT }
   );
+
   const [_, setCompletedCount] = useLocalStorageState('rm_completed_count', {
     defaultValue: { [config.name]: { [categoryId]: 0 } },
   });
@@ -29,32 +30,30 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     defaultValue: { [config.name]: [] as number[] },
   });
 
+  const [visible, setVisible] = useState(
+    !completedMarkers[config.name]?.includes(parentId) &&
+      !hiddenCategories[config.name]?.includes(categoryId)
+  );
+
   useEffect(() => {
-    if (
-      completedMarkers[config.name]?.includes(parentId) &&
-      !completedMarkers[config.name]?.includes(id)
-    ) {
-      setCompletedMarkers((prev) => ({
-        ...prev,
-        [config.name]: [...prev[config.name], id],
-      }));
-      setCompletedCount((prev) => ({
-        ...prev,
-        [config.name]: {
-          ...prev[config.name],
-          [categoryId]: prev[config.name][categoryId] + 1,
-        },
-      }));
+    if (completedMarkers[config.name]?.includes(parentId)) {
+      if (!completedMarkers[config.name]?.includes(id)) {
+        setCompletedMarkers((prev) => ({
+          ...prev,
+          [config.name]: [...prev[config.name], id],
+        }));
+        setCompletedCount((prev) => ({
+          ...prev,
+          [config.name]: {
+            ...prev[config.name],
+            [categoryId]: prev[config.name][categoryId] + 1,
+          },
+        }));
+      }
+      setVisible(false);
     }
-  }, [
-    completedMarkers,
-    id,
-    parentId,
-    categoryId,
-    setCompletedCount,
-    setCompletedMarkers,
-    config.name,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [completedMarkers]);
 
   const arrow = [
     {
@@ -81,11 +80,11 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     },
   ];
 
-  return !completedMarkers[config.name]?.includes(id) &&
-    !hiddenCategories[config.name]?.includes(categoryId) &&
-    !hiddenCategories[config.name]?.includes(89) ? (
-    <PathDecorator patterns={arrow} polyline={path} />
-  ) : null;
+  return (
+    visible && (
+      <PathDecorator patterns={arrow} polyline={path} visible={visible} />
+    )
+  );
 };
 
 export default Path;
