@@ -4,6 +4,8 @@ import localFont from 'next/font/local';
 import '@/styles/globals.css';
 import '@/styles/colors.css';
 
+import { ThemeContextProvider } from '@/context/themeContext';
+
 const hylia = localFont({
   src: [
     {
@@ -28,11 +30,13 @@ const witcher = localFont({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div
-      className={`font-primary ${witcher.variable} ${hylia.variable} font-witcher`}
-    >
-      <Component {...pageProps} />
-    </div>
+    <ThemeContextProvider>
+      <div
+        className={`font-primary ${witcher.variable} ${hylia.variable} font-witcher bg-primary-300 dark:bg-primary-500`}
+      >
+        <Component {...pageProps} />
+      </div>
+    </ThemeContextProvider>
   );
 }
 

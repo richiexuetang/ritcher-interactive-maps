@@ -16,6 +16,7 @@ type ClusterEvents = {
 type MarkerClusterControl = L.MarkerClusterGroupOptions & {
   children: React.ReactNode;
   zoomToBoundsOnClick: boolean;
+  fillColor?: string;
 } & ClusterEvents;
 
 const MarkerClusterGroup = createPathComponent(

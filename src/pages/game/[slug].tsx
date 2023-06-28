@@ -56,12 +56,12 @@ const GamePage = ({
         className={`flex flex-col font-${config.font} bg-primary-300 h-screen items-center`}
       >
         <h1 className={`font-${config.font} pt-4`}>{config.title}</h1>
-        <div className='mt-8 flex'>
+        <div className='mt-8 flex flex-wrap justify-center'>
           {config.mapOptions.map((option: ImageDataType) => {
             return (
               <div
                 key={option.name}
-                className='mx-2 flex flex-col'
+                className='mx-2 mt-8 flex flex-col flex-wrap'
                 onClick={(e) => handleNavigation(e, option.path)}
               >
                 <NextImage

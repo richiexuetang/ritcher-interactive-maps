@@ -28,15 +28,14 @@ export default function HomePage() {
       <Seo />
 
       <main>
-        <section className='bg-primary-300'>
+        <section className='bg-primary-300 dark:bg-primary-500'>
           <div className='layout relative flex min-h-screen flex-col items-center justify-between py-12 text-center'>
-            <h1 className='text-primary-200'>Games</h1>
             <div className='mt-4 flex h-screen flex-wrap hover:cursor-pointer'>
               {gamesData.map((data) => {
                 return (
                   <div
                     key={data.name}
-                    className='mx-2 flex flex-col'
+                    className='font-primary mx-2 flex flex-col'
                     onClick={(e) => handleNavigation(e, data.path)}
                   >
                     <NextImage

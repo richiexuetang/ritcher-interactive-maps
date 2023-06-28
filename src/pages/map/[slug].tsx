@@ -11,6 +11,7 @@ import { gamesData } from '@/data/config/gameConfig';
 import mapConfig from '@/data/config/mapConfig';
 
 import SidebarControl from '@/components/control/SidebarControl';
+import Loader from '@/components/loader/Loader';
 import Seo from '@/components/Seo';
 
 import { AreaConfigType, CategoryItemsType } from '@/types/config';
@@ -113,6 +114,7 @@ const MapPage = ({
   const [loading] = useLoading();
   const [map, setMap] = useState<Map | null>(null);
   const [hide, setHide] = useState<number | null>(null);
+  const [searchResults, setSearchResults] = useState<LocationType[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [markerRefs] = useState<any>([]);
 
@@ -123,7 +125,7 @@ const MapPage = ({
         faviconPath={config.gameSlug}
       />
       {loading ? (
-        <div>Loading...</div>
+        <Loader loading={loading as boolean} />
       ) : (
         <>
           {map && (
@@ -135,6 +137,8 @@ const MapPage = ({
               config={config}
               markerRefs={markerRefs}
               mapConfigInfo={mapConfigInfo}
+              searchResults={searchResults}
+              setSearchResults={setSearchResults}
             />
           )}
           <AppMap
@@ -147,6 +151,7 @@ const MapPage = ({
             markerRefs={markerRefs}
             textOverlay={textOverlay}
             pathMarkers={pathMarkers}
+            searchResults={searchResults}
           />
         </>
       )}

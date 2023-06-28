@@ -109,8 +109,10 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
                 useSkeleton
                 src={`/images/icons/${member.categoryId}.png`}
                 width='25'
-                height='25'
+                height='0'
                 alt='Icon'
+                fallbackSrc={`/images/icons/${group}.png`}
+                className='w-auto'
               />
               <p className={clsxm([hiddenFlag && 'line-through	'])}>
                 {categoryIdNameMap[member.categoryId]}

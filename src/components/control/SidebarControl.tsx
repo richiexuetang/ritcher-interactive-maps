@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-nocheck
+
 import React, { useEffect, useState } from 'react';
 import {
   FiChevronLeft,
@@ -18,6 +18,7 @@ import SearchResult from '@/components/control/sidebar/SearchResult';
 import Sidebar from '@/components/control/sidebar/Sidebar';
 import Tab from '@/components/control/sidebar/Tab';
 import UnderlineLink from '@/components/links/UnderlineLink';
+import Loader from '@/components/loader/Loader';
 
 import { CategoryIdToCountT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
@@ -31,6 +32,8 @@ interface SidebarControlPropsType {
   config: AreaConfigType;
   markerRefs: any;
   mapConfigInfo: any;
+  searchResults: LocationType[];
+  setSearchResults: any;
 }
 
 const SidebarControl: React.FC<SidebarControlPropsType> = ({
@@ -41,15 +44,16 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   config,
   markerRefs,
   mapConfigInfo,
+  searchResults,
+  setSearchResults,
 }) => {
   const [openTab, setOpenTab] = useState<string | boolean>('home');
-  const [searchResults, setSearchResults] = useState<LocationType[]>([]);
   const [searching, setSearching] = useState<boolean>(false);
   const font = mapConfigInfo?.font;
   const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
     'rm_hidden_categories',
     {
-      defaultValue: { [config.name]: [] },
+      defaultValue: { [config.name]: [] as number[] },
     }
   );
 
@@ -68,9 +72,9 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   };
 
   const handleHideAll = () => {
-    const hiddenState = hiddenCategories[config.name] || [];
+    const hiddenState = hiddenCategories[config.name] || ([] as number[]);
     locationGroups.map((group) => {
-      if (!hiddenState.includes(group.categoryId)) {
+      if (!hiddenState?.includes(group?.categoryId)) {
         hiddenState.push(group.categoryId);
       }
     });
@@ -124,9 +128,16 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
     }
   }, [config.name, hiddenCategories, setHiddenCategories]);
 
+  useEffect(() => {
+    if (openTab !== 'search' && searchResults.length) {
+      setSearchResults([]);
+    }
+  }, [openTab, searchResults.length, setSearchResults]);
+
   return (
     <section className={`Sidebar font-${font}`}>
       <Sidebar
+        id='sidebar'
         map={map}
         position='left'
         collapsed={!openTab}
@@ -134,7 +145,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
         closeIcon={<FiChevronLeft />}
         onClose={onClose}
         onOpen={onOpen}
-        panMapOnChange
         rehomeControls
       >
         <Tab
@@ -202,7 +212,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           font={font}
           gameSlug={config.gameSlug}
         >
-          <div className='flex flex-wrap justify-center gap-2 align-middle'>
+          <div className='mt-5 flex flex-col flex-wrap items-center justify-center gap-2 align-middle'>
             {config?.subSelections.map((selection) => {
               return (
                 <UnderlineLink
@@ -232,9 +242,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
                 <svg
                   fill='none'
                   stroke='currentColor'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
                   viewBox='0 0 24 24'
                   className='h-6 w-6'
                 >
@@ -248,11 +255,16 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
               className='bg-primary-200 text-primary-200 focus:bg-primary-200 w-full rounded-md py-2 pl-10 text-sm focus:text-black focus:outline-none'
               placeholder='Search...'
               onKeyUp={(e) => handleKeyPress(e)}
+              onChange={() => setSearchResults([])}
             />
           </div>
           <div className='text-primary-100 overflow-scroll hover:cursor-pointer'>
-            {searching && <div>Searching for markers...</div>}
-            {searchResults?.map((result) => (
+            {searching && (
+              <div className='mt-3'>
+                <Loader loading={searching} />
+              </div>
+            )}
+            {searchResults?.map((result: any) => (
               <SearchResult
                 key={result._id}
                 result={result}

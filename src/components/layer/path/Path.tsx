@@ -1,8 +1,9 @@
-import { LatLngExpression } from 'leaflet';
 import { useEffect } from 'react';
-import { Polyline } from 'react-leaflet';
+import '@/lib/leaflet/path/L.Symbol.js';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
+
+import PathDecorator from '@/components/layer/path/PathDecorator';
 
 import { MapToCompletedT } from '@/types/category';
 import { AreaConfigType } from '@/types/config';
@@ -27,9 +28,6 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
   const [hiddenCategories] = useLocalStorageState('rm_hidden_categories', {
     defaultValue: { [config.name]: [] as number[] },
   });
-
-  const start = [path[0][0], path[0][1]] as LatLngExpression;
-  const end = [path[1][0], path[1][1]] as LatLngExpression;
 
   useEffect(() => {
     if (
@@ -58,9 +56,35 @@ const Path: React.FC<PathComponentProps> = ({ pathInfo, config }) => {
     config.name,
   ]);
 
+  const arrow = [
+    {
+      offset: '100%',
+      repeat: 0,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      symbol: L.Symbol.arrowHead({
+        pixelSize: 15,
+        polygon: false,
+        pathOptions: { stroke: true },
+      }),
+    },
+    {
+      offset: '20%',
+      repeat: '40%',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      symbol: L.Symbol.arrowHead({
+        pixelSize: 15,
+        polygon: false,
+        pathOptions: { stroke: true },
+      }),
+    },
+  ];
+
   return !completedMarkers[config.name]?.includes(id) &&
-    !hiddenCategories[config.name]?.includes(categoryId) ? (
-    <Polyline positions={[start, end]} color='white' weight={1} />
+    !hiddenCategories[config.name]?.includes(categoryId) &&
+    !hiddenCategories[config.name]?.includes(89) ? (
+    <PathDecorator patterns={arrow} polyline={path} />
   ) : null;
 };
 

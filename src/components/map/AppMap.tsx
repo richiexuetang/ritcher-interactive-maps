@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LatLngBoundsExpression, Map } from 'leaflet';
+import { LatLngBoundsExpression, LatLngExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import { LayerGroup, Marker, TileLayer } from 'react-leaflet';
+import {
+  CircleMarker,
+  LayerGroup,
+  Marker,
+  TileLayer,
+  Tooltip,
+} from 'react-leaflet';
 
 import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
+
+import { categoryIdNameMap } from '@/data/config/categoryItems';
+
+import MarkerClusterGroup from '@/components/layer/cluster/MarkerClusterGroup';
 
 import { AreaConfigType } from '@/types/config';
 import { LocationGroupType, LocationType } from '@/types/location';
@@ -53,6 +63,7 @@ const AppMap = (props: {
   markerRefs: any;
   textOverlay: any;
   pathMarkers: any;
+  searchResults: LocationType[];
 }) => {
   const {
     config,
@@ -64,6 +75,7 @@ const AppMap = (props: {
     markerRefs,
     textOverlay,
     pathMarkers,
+    searchResults,
   } = props;
   const [_, copy] = useCopyToClipboard();
 
@@ -93,57 +105,104 @@ const AppMap = (props: {
               bounds={config.bounds as LatLngBoundsExpression}
             />
             <LayerControl setHide={setHide} hide={hide} config={config}>
-              {locationGroups.map(
-                ({ categoryId, ranks, group, markerTypeId }) => {
-                  const checked = !mapHiddenCategories?.includes(categoryId);
-                  return (
-                    <GroupedLayer
-                      key={`${categoryId} + ${group}`}
-                      checked={checked}
-                      id={group}
-                      name={categoryId}
-                      group={group}
-                    >
-                      <LayerGroup>
-                        {markerTypeId === 1 &&
-                          ranks?.map((rank) => {
-                            const location = locations[rank];
+              {searchResults.length &&
+                searchResults.map((result, i) => (
+                  <RMMarker
+                    key={result._id}
+                    markerRefs={markerRefs}
+                    location={result}
+                    rank={i}
+                    config={config}
+                  />
+                ))}
+              {!searchResults.length &&
+                locationGroups.map(
+                  ({ categoryId, ranks, group, markerTypeId }) => {
+                    const checked = !mapHiddenCategories?.includes(categoryId);
+                    const groupColor =
+                      '#' +
+                      (0x1000000 + Math.random() * 0xffffff)
+                        .toString(16)
+                        .substr(1, 6);
 
-                            if (location?.coordinate) {
-                              return (
-                                <RMMarker
-                                  key={location._id}
-                                  markerRefs={markerRefs}
-                                  location={location}
-                                  rank={rank}
-                                  config={config}
-                                />
-                              );
-                            }
-                          })}
-                      </LayerGroup>
-                    </GroupedLayer>
-                  );
-                }
-              )}
+                    return (
+                      <GroupedLayer
+                        key={`${categoryId} + ${group}`}
+                        checked={checked}
+                        id={group}
+                        name={categoryId}
+                        group={group}
+                      >
+                        <LayerGroup>
+                          {markerTypeId === 1 &&
+                            ranks?.map((rank) => {
+                              const location = locations[rank];
+
+                              if (location?.coordinate) {
+                                return (
+                                  <RMMarker
+                                    key={location._id}
+                                    markerRefs={markerRefs}
+                                    location={location}
+                                    rank={rank}
+                                    config={config}
+                                  />
+                                );
+                              }
+                            })}
+                          {markerTypeId === 3 && (
+                            <MarkerClusterGroup
+                              fillColor={groupColor}
+                              zoomToBoundsOnClick={true}
+                            >
+                              <LayerGroup>
+                                {ranks?.map((rank) => {
+                                  const location = locations[rank];
+                                  return (
+                                    <CircleMarker
+                                      key={`${rank}`}
+                                      center={
+                                        location.coordinate as LatLngExpression
+                                      }
+                                      color={groupColor}
+                                      radius={2}
+                                    >
+                                      <Tooltip>
+                                        {categoryIdNameMap[categoryId]}
+                                      </Tooltip>
+                                    </CircleMarker>
+                                  );
+                                })}
+                              </LayerGroup>
+                            </MarkerClusterGroup>
+                          )}
+                        </LayerGroup>
+                      </GroupedLayer>
+                    );
+                  }
+                )}
             </LayerControl>
-            <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
-            <PathLayer pathMarkers={pathMarkers} config={config} />
-            <Marker
-              position={[0.6922458720270068, -0.6505778088279058]}
-              draggable
-              icon={L.icon({
-                iconUrl: `/images/icons/69.png`,
-                iconSize: [35, 45],
-                iconAnchor: [17, 45],
-              })}
-              eventHandlers={{
-                dragend: (e) => {
-                  const pos = e.target._latlng;
-                  copy(`[${pos.lat}, ${pos.lng}]`);
-                },
-              }}
-            />
+            {!searchResults.length && (
+              <>
+                <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
+                <PathLayer pathMarkers={pathMarkers} config={config} />
+                <Marker
+                  position={[0.6922458720270068, -0.6505778088279058]}
+                  draggable
+                  icon={L.icon({
+                    iconUrl: `/images/icons/69.png`,
+                    iconSize: [35, 45],
+                    iconAnchor: [17, 45],
+                  })}
+                  eventHandlers={{
+                    dragend: (e) => {
+                      const pos = e.target._latlng;
+                      copy(`[${pos.lat}, ${pos.lng}]`);
+                    },
+                  }}
+                />
+              </>
+            )}
           </>
         )}
       </RMMapContainer>
@@ -157,6 +216,7 @@ const AppMap = (props: {
     setHide,
     locations,
     mapHiddenCategories,
+    searchResults,
   ]);
 
   return map;

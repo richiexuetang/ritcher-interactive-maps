@@ -18,7 +18,7 @@ const Tab = (props: any) => {
         </div>
       </h1>
       <div
-        className='item-center hover:cursor-pointer'
+        className='item-center flex hover:cursor-pointer'
         onClick={() => router.push('/game/' + props.gameSlug)}
       >
         <NextImage

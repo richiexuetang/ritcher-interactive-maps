@@ -7,6 +7,7 @@ type NextImageProps = {
   useSkeleton?: boolean;
   imgClassName?: string;
   blurClassName?: string;
+  fallbackSrc?: string;
   alt: string;
 } & (
   | { width: string | number; height: string | number }
@@ -28,12 +29,19 @@ export default function NextImage({
   className,
   imgClassName,
   blurClassName,
+  fallbackSrc = '',
   ...rest
 }: NextImageProps) {
+  const [error, setError] = React.useState<boolean | null>(null);
+
   const [status, setStatus] = React.useState(
     useSkeleton ? 'loading' : 'complete'
   );
   const widthIsSet = className?.includes('w-') ?? false;
+
+  React.useEffect(() => {
+    setError(null);
+  }, [src]);
 
   return (
     <figure
@@ -45,11 +53,12 @@ export default function NextImage({
           imgClassName,
           status === 'loading' && clsxm('animate-pulse', blurClassName)
         )}
-        src={src}
+        src={error ? fallbackSrc : src}
         width={width}
         height={height}
         alt={alt}
         onLoadingComplete={() => setStatus('complete')}
+        onError={() => setError(true)}
         {...rest}
       />
     </figure>
