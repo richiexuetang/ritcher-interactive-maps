@@ -77,12 +77,13 @@ export function LocalStorageContextProvider(
 ): ReactElement {
   const router = useRouter();
   const [areaConfig, setAreaConfig] = useState<AreaConfigType | any>({});
-  const [completed, setCompleted] = useState(
-    useLocalStorageState('rm_completed', { defaultValue: {} })
-  );
+  const [completed, setCompleted] = useLocalStorageState('rm_completed', {
+    defaultValue: { [areaConfig?.name]: [] },
+  });
 
-  const [completedCount, setCompletedCount] = useState(
-    useLocalStorageState('rm_completed', { defaultValue: {} })
+  const [completedCount, setCompletedCount] = useLocalStorageState(
+    'rm_completed_count',
+    { defaultValue: { [areaConfig?.name]: {} } }
   );
 
   const [userSettings, setUserSettings] = useLocalStorageState(
