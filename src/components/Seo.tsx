@@ -1,13 +1,11 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-// !STARTERCONF Change these default meta
 const defaultMeta = {
   title: 'Interactive Maps',
   siteName: 'Interactive Maps',
   description:
     'Interactive game map for RPGs such as tears of the kingdom and the witcher 3',
-  /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
   url: 'https://ritcher-map.vercel.app',
   type: 'website',
   robots: 'follow, index',
@@ -15,7 +13,8 @@ const defaultMeta = {
    * No need to be filled, will be populated with openGraph function
    * If you wish to use a normal image, just specify the path below
    */
-  image: 'https://tsnext-tw.thcl.dev/images/large-og.png',
+  image:
+    'https://https://ritcher-interactive-maps.vercel.app/images/large-og.png',
 };
 
 type SeoProps = {
