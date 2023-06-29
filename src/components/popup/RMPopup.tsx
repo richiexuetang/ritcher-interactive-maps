@@ -22,6 +22,7 @@ interface RMPopupPropsType {
   setTriggerPopup: any;
   markerRefs: any;
   hasChild?: boolean;
+  font: string;
 }
 
 const RMPopup: React.FC<RMPopupPropsType> = ({
@@ -31,6 +32,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
   setTriggerPopup,
   markerRefs,
   hasChild,
+  font,
 }) => {
   const [completed, setCompleted] = useLocalStorageState('rm_completed', {
     defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
@@ -107,7 +109,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     <Popup className='rm-popup'>
       <div className='flex'>
         <div className='flex flex-col'>
-          <p className='font-hylia text-lg'>{markerName}</p>
+          <p className={`font-${font} text-lg`}>{markerName}</p>
           <p>{categoryIdNameMap[categoryId]}</p>
         </div>
         <IconButton

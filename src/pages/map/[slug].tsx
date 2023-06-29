@@ -152,6 +152,7 @@ const MapPage = ({
             textOverlay={textOverlay}
             pathMarkers={pathMarkers}
             searchResults={searchResults}
+            mapConfigInfo={mapConfigInfo}
           />
         </>
       )}

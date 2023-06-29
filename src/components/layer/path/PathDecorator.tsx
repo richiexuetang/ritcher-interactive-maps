@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import L, { LatLngExpression, Polyline } from 'leaflet';
+import { LatLngExpression, Polyline } from 'leaflet';
 import React, { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
 import '@/lib/leaflet/path/L.PolylineDecorator.js';

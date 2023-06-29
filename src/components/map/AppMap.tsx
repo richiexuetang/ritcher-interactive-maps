@@ -59,6 +59,8 @@ const AppMap = (props: {
   textOverlay: TextOverlayType[];
   pathMarkers: PathType[];
   searchResults: LocationType[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapConfigInfo: any;
 }) => {
   const {
     config,
@@ -71,6 +73,7 @@ const AppMap = (props: {
     textOverlay,
     pathMarkers,
     searchResults,
+    mapConfigInfo,
   } = props;
 
   const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
@@ -145,6 +148,7 @@ const AppMap = (props: {
                                     rank={rank}
                                     config={config}
                                     childPath={path}
+                                    font={mapConfigInfo?.font}
                                   />
                                 );
                               }
@@ -184,21 +188,6 @@ const AppMap = (props: {
             {!searchResults.length && (
               <>
                 <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
-                {/* <Marker
-                  position={[0.6922458720270068, -0.6505778088279058]}
-                  draggable
-                  icon={L.icon({
-                    iconUrl: `/images/icons/69.png`,
-                    iconSize: [35, 45],
-                    iconAnchor: [17, 45],
-                  })}
-                  eventHandlers={{
-                    dragend: (e) => {
-                      const pos = e.target._latlng;
-                      copy(`[${pos.lat}, ${pos.lng}]`);
-                    },
-                  }}
-                /> */}
               </>
             )}
           </>

@@ -7,6 +7,7 @@ import 'leaflet-contextmenu';
 
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
+import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import PathDecorator from '@/components/layer/path/PathDecorator';
@@ -22,6 +23,7 @@ interface RMMarkerPropsType {
   rank: number;
   config: AreaConfigType;
   childPath?: PathType | undefined;
+  font?: any;
 }
 
 const RMMarker: React.FC<RMMarkerPropsType> = ({
@@ -30,6 +32,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   rank,
   config,
   childPath,
+  font = 'primary',
 }) => {
   const map = useMap();
   const params = useSearchParams();
@@ -49,7 +52,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   const [hideMarker, setHideMarker] = useState(false);
   const [triggerPopup, setTriggerPopup] = useState(false);
 
-  // const [value, copy] = useCopyToClipboard();
+  const [_, copy] = useCopyToClipboard();
 
   // const handleGetId = (e: any) => {
   //   copy(`${location._id}`);
@@ -121,6 +124,14 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polylines, hideMarker]);
 
+  const getMarkerId = () => {
+    copy(location._id);
+  };
+
+  const copyMarkerCoordinate = () => {
+    copy(`${location.coordinate[0]}, ${location.coordinate[1]}`);
+  };
+
   return !hideMarker ? (
     <>
       {childPath?.path && (
@@ -140,6 +151,20 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
           iconAnchor: [17, 45],
         })}
         zIndexOffset={rank}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        contextmenu={true}
+        contextmenuWidth={140}
+        contextmenuItems={[
+          {
+            text: 'Get marker id',
+            callback: getMarkerId,
+          },
+          {
+            text: 'Get marker coordinate',
+            callback: copyMarkerCoordinate,
+          },
+        ]}
       >
         <RMPopup
           location={location}
@@ -148,6 +173,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
           setTriggerPopup={setTriggerPopup}
           markerRefs={markerRefs}
           hasChild={childPath?.categoryId === location.categoryId}
+          font={font}
         />
       </Marker>
     </>

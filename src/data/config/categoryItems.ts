@@ -114,6 +114,7 @@ export const categoryIdNameMap: MapCategoryIdToNameT = {
   112: 'Golden Apple',
   113: 'Dazzle Fruit',
   114: 'Shock Fruit',
+  115: 'Area',
   116: 'Splash Fruit',
   117: 'Ice Fruit',
   118: 'Fire Fruit',
@@ -227,7 +228,7 @@ export const categoryItemsConfig = [
       {
         name: 'locations',
         groupType: 1,
-        members: [57, 58, 60, 67, 71, 77, 86, 90, 91, 99, 97, 98],
+        members: [115, 57, 58, 60, 67, 71, 77, 86, 90, 91, 99, 97, 98],
       },
       {
         name: 'services',
