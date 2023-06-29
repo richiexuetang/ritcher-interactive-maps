@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import { LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import * as ReactLeaflet from 'react-leaflet';
 import '@/lib/leaflet/smooth-wheel-zoom.js';
 import 'leaflet-contextmenu';
@@ -9,26 +11,37 @@ import 'leaflet/dist/leaflet.css';
 
 import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 const { MapContainer } = ReactLeaflet;
 
 interface MapContainerProp {
   children?: any;
-  config: any;
   setMap: any;
+  staticConfig: any;
 }
 
 const RMMapContainer: React.FC<MapContainerProp> = ({
   children,
-  config,
   setMap,
+  staticConfig,
   ...rest
 }) => {
+  const { areaConfig } = useLocalStorageContext();
+  const router = useRouter();
   const [_, copy] = useCopyToClipboard();
   const [mapZoom, setMapZoom] = useState<null | number>(null);
+  const [mapBounds, setMapBounds] = useState<LatLngBoundsExpression>(
+    areaConfig?.bounds as LatLngBoundsExpression
+  );
   const addMarker = (e: any) => {
     const newPos = e.latlng;
     copy(`${newPos.lat}, ${newPos.lng}`);
   };
+
+  useEffect(() => {
+    setMapBounds(areaConfig?.bounds as LatLngBoundsExpression);
+  }, [router, areaConfig]);
 
   return (
     <MapContainer
@@ -38,11 +51,11 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
       zoomControl={false}
       scrollWheelZoom={false}
       attributionControl={false}
-      center={config.center}
-      zoom={config.zoom}
-      bounds={config.bounds}
-      minZoom={config.minZoom}
-      maxZoom={config.maxZoom}
+      center={staticConfig?.center as LatLngExpression}
+      zoom={staticConfig?.zoom}
+      bounds={mapBounds}
+      minZoom={staticConfig?.minZoom}
+      maxZoom={staticConfig?.maxZoom}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       smoothWheelZoom={true}

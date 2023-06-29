@@ -1,7 +1,4 @@
-import { Map } from 'leaflet';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
 
 import { useLoading } from '@/lib/hooks/useLoading';
 
@@ -10,16 +7,14 @@ import { categoryItemsConfig } from '@/data/config/categoryItems';
 import { gamesData } from '@/data/config/gameConfig';
 import mapConfig from '@/data/config/mapConfig';
 
-import SidebarControl from '@/components/control/SidebarControl';
 import Loader from '@/components/loader/Loader';
+import MapPage from '@/components/map/MapPage';
 import Seo from '@/components/Seo';
+
+import { LocalStorageContextProvider } from '@/context/localStorageContext';
 
 import { AreaConfigType, CategoryItemsType } from '@/types/config';
 import { LocationGroupType, LocationType } from '@/types/location';
-
-const AppMap = dynamic(() => import('@/components/map/AppMap'), {
-  ssr: false,
-});
 
 interface ICategoryCountKeys {
   [categoryId: number]: number;
@@ -102,7 +97,7 @@ export async function getStaticPaths() {
   };
 }
 
-const MapPage = ({
+const RMMap = ({
   config,
   categoryCounts,
   textOverlay,
@@ -112,14 +107,9 @@ const MapPage = ({
   mapConfigInfo,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [loading] = useLoading();
-  const [map, setMap] = useState<Map | null>(null);
-  const [hide, setHide] = useState<number | null>(null);
-  const [searchResults, setSearchResults] = useState<LocationType[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [markerRefs] = useState<any>([]);
 
   return (
-    <>
+    <LocalStorageContextProvider>
       <Seo
         templateTitle={`Interactive Map | ${mapConfigInfo.name}`}
         faviconPath={config.gameSlug}
@@ -127,37 +117,24 @@ const MapPage = ({
       {loading ? (
         <Loader loading={loading as boolean} />
       ) : (
-        <>
-          {map && (
-            <SidebarControl
-              map={map}
-              locationGroups={locationGroups}
-              setHide={setHide}
-              categoryCounts={categoryCounts}
-              config={config}
-              markerRefs={markerRefs}
-              mapConfigInfo={mapConfigInfo}
-              searchResults={searchResults}
-              setSearchResults={setSearchResults}
-            />
-          )}
-          <AppMap
-            config={config}
-            locations={locations}
-            locationGroups={locationGroups}
-            setMap={setMap}
-            hide={hide}
-            setHide={setHide}
-            markerRefs={markerRefs}
-            textOverlay={textOverlay}
-            pathMarkers={pathMarkers}
-            searchResults={searchResults}
-            mapConfigInfo={mapConfigInfo}
-          />
-        </>
+        <MapPage
+          staticConfig={config}
+          locationGroups={locationGroups}
+          categoryCounts={categoryCounts}
+          mapConfigInfo={mapConfigInfo}
+          locations={locations}
+          textOverlay={textOverlay}
+          pathMarkers={pathMarkers}
+        />
       )}
-    </>
+
+      {/* {loading ? (
+        <Loader loading={loading as boolean} />
+      ) : (
+        
+      )} */}
+    </LocalStorageContextProvider>
   );
 };
 
-export default MapPage;
+export default RMMap;

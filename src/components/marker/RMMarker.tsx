@@ -8,56 +8,43 @@ import 'leaflet-contextmenu';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
 import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import PathDecorator from '@/components/layer/path/PathDecorator';
 import RMPopup from '@/components/popup/RMPopup';
 
-import { MapToCompletedT } from '@/types/category';
-import { AreaConfigType } from '@/types/config';
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 import { PathType } from '@/types/location';
 
 interface RMMarkerPropsType {
   markerRefs: any;
   location: any;
   rank: number;
-  config: AreaConfigType;
   childPath?: PathType | undefined;
-  font?: any;
 }
 
 const RMMarker: React.FC<RMMarkerPropsType> = ({
   markerRefs,
   location,
   rank,
-  config,
   childPath,
-  font = 'primary',
 }) => {
+  const { areaConfig: config } = useLocalStorageContext();
+
   const map = useMap();
   const params = useSearchParams();
   const markerSearchParam = params.get('markerId');
 
   const [polylines, setPolylines] = useState<Polyline[] | any[]>([]);
 
-  const [completedMarkers] = useLocalStorageState('rm_completed', {
-    defaultValue: { [config.name]: [] } as MapToCompletedT,
-  });
-
-  const [userSettings] = useLocalStorageState('rm_user_settings', {
-    defaultValue: { hideCompleted: true },
-  });
+  const { completed: completedMarkers, userSettings } =
+    useLocalStorageContext();
 
   const [completed, setCompleted] = useState(false);
   const [hideMarker, setHideMarker] = useState(false);
   const [triggerPopup, setTriggerPopup] = useState(false);
 
   const [_, copy] = useCopyToClipboard();
-
-  // const handleGetId = (e: any) => {
-  //   copy(`${location._id}`);
-  //   alert(location._id);
-  // };
 
   useEffect(() => {
     if (markerSearchParam && markerSearchParam === location._id) {
@@ -67,16 +54,20 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
       });
 
       setTriggerPopup(true);
-      window.history.replaceState(null, '', `/map/${config.name}`);
+      window.history.replaceState(null, '', `/map/${config?.name}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markerSearchParam]);
 
   useEffect(() => {
-    if (completedMarkers[config.name]?.includes(location._id) && !completed) {
+    if (
+      config?.name &&
+      completedMarkers[config.name]?.includes(location._id) &&
+      !completed
+    ) {
       setCompleted(true);
     }
-  }, [completedMarkers, completed, setCompleted, location._id, config.name]);
+  }, [completedMarkers, completed, setCompleted, location._id, config]);
 
   useEffect(() => {
     if (userSettings.hideCompleted && completed) {
@@ -168,12 +159,10 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
       >
         <RMPopup
           location={location}
-          config={config}
           triggerPopup={triggerPopup}
           setTriggerPopup={setTriggerPopup}
           markerRefs={markerRefs}
           hasChild={childPath?.categoryId === location.categoryId}
-          font={font}
         />
       </Marker>
     </>

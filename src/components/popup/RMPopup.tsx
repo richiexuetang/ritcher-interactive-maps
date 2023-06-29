@@ -5,48 +5,40 @@ import { FiLink } from 'react-icons/fi';
 import { Popup } from 'react-leaflet';
 
 import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import IconButton from '@/components/buttons/IconButton';
 
-import { MapToCompletedT } from '@/types/category';
-import { AreaConfigType } from '@/types/config';
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 import { LocationType } from '@/types/location';
 
 interface RMPopupPropsType {
   location: LocationType;
-  config: AreaConfigType;
   triggerPopup: boolean;
   setTriggerPopup: any;
   markerRefs: any;
   hasChild?: boolean;
-  font: string;
 }
 
 const RMPopup: React.FC<RMPopupPropsType> = ({
   location,
-  config,
   triggerPopup,
   setTriggerPopup,
   markerRefs,
   hasChild,
-  font,
 }) => {
-  const [completed, setCompleted] = useLocalStorageState('rm_completed', {
-    defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
-  });
-  const [completedCount, setCompletedCount] = useLocalStorageState(
-    'rm_completed_count',
-    {
-      defaultValue: { [config.name]: { [location.categoryId]: 0 } },
-    }
-  );
+  const {
+    setCompletedCount,
+    completed,
+    setCompleted,
+    areaConfig: config,
+  } = useLocalStorageContext();
 
   const { markerName, categoryId, _id, description } = location;
   const [checked, setChecked] = useState<boolean>(
-    completed[config.name]?.includes(_id)
+    config?.name ? completed[config?.name]?.includes(_id) : false
   );
   const [_, copy] = useCopyToClipboard();
   const pathname = usePathname();
@@ -55,33 +47,42 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     e: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => {
-    const newCompleted = completed[config.name] || [];
-    const decrement = hasChild ? -2 : -1;
-    if (!e.target.checked) {
-      const lst = completed[config.name]?.filter((item) => item !== id) || [];
-      setCompleted((prev) => ({ ...prev, [config.name]: [...lst] }));
-      setCompletedCount((prev) => ({
-        ...prev,
-        [config.name]: {
-          ...prev[config.name],
-          [location.categoryId]:
-            prev[config.name][location.categoryId] + decrement,
-        },
-      }));
-    } else {
-      newCompleted.push(id);
-      const increment = hasChild ? 2 : 1;
-      setCompleted((prev) => ({ ...prev, [config.name]: [...newCompleted] }));
-      setCompletedCount((prev) => ({
-        ...prev,
-        [config.name]: {
-          ...prev[config.name],
-          [location.categoryId]:
-            prev[config.name][location.categoryId] + increment || increment,
-        },
-      }));
+    if (config?.name) {
+      const newCompleted = completed[config?.name] || [];
+      const decrement = hasChild ? -2 : -1;
+      if (!e.target.checked) {
+        const lst =
+          (config?.name &&
+            completed[config?.name]?.filter((item: string) => item !== id)) ||
+          [];
+        setCompleted((prev: any) => ({ ...prev, [config.name]: [...lst] }));
+        setCompletedCount((prev: { [x: string]: (string | number)[] }) => ({
+          ...prev,
+          [config.name]: {
+            ...prev[config.name],
+            [location.categoryId]:
+              (prev[config.name][location.categoryId] as number) + decrement ||
+              0,
+          },
+        }));
+      } else {
+        newCompleted.push(id);
+        const increment = hasChild ? 2 : 1;
+        setCompleted((prev: any) => ({
+          ...prev,
+          [config.name]: [...newCompleted],
+        }));
+        setCompletedCount((prev: { [x: string]: number[] }) => ({
+          ...prev,
+          [config.name]: {
+            ...prev[config.name],
+            [location.categoryId]:
+              prev[config.name][location.categoryId] + increment || increment,
+          },
+        }));
+      }
+      setChecked(e.target.checked);
     }
-    setChecked(e.target.checked);
   };
 
   useEffect(() => {
@@ -92,15 +93,6 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerPopup, markerRefs]);
 
-  useEffect(() => {
-    if (!completedCount[config.name]) {
-      setCompletedCount((prev) => ({
-        ...prev,
-        [config.name]: { [location.categoryId]: 0 },
-      }));
-    }
-  });
-
   const handleCopyLink = () => {
     copy(`${process.env.BASE_URL}${pathname}?markerId=${location._id}`);
   };
@@ -109,7 +101,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     <Popup className='rm-popup'>
       <div className='flex'>
         <div className='flex flex-col'>
-          <p className={`font-${font} text-lg`}>{markerName}</p>
+          <p className={`font-${config?.font} text-lg`}>{markerName}</p>
           <p>{categoryIdNameMap[categoryId]}</p>
         </div>
         <IconButton

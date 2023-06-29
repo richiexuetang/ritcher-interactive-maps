@@ -2,18 +2,15 @@ import { Layer, Util } from 'leaflet';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { useMapEvents } from 'react-leaflet';
 
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
-
 import { LayersControlProvider } from '@/components/control/context';
 
-import createControlledLayer from './controlledLayer';
+import { useLocalStorageContext } from '@/context/localStorageContext';
 
-import { AreaConfigType } from '@/types/config';
+import createControlledLayer from './controlledLayer';
 
 interface LayerControlPropsType {
   hide: number | null;
   setHide: React.Dispatch<React.SetStateAction<number | null>>;
-  config: AreaConfigType;
 }
 
 interface LayerObjType {
@@ -32,23 +29,15 @@ const LayerControl: React.FC<PropsWithChildren<LayerControlPropsType>> = ({
   children,
   hide,
   setHide,
-  config,
 }) => {
   const [layers, setLayers] = useState<LayerObjType[]>([]);
   const [groupedLayers, setGroupedLayers] = useState({});
 
-  const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
-    'rm_hidden_categories',
-    {
-      defaultValue: { [config.name]: [] as number[] },
-    }
-  );
-
-  useEffect(() => {
-    if (!hiddenCategories[config.name]) {
-      setHiddenCategories((prev) => ({ ...prev, [config.name]: [] }));
-    }
-  }, [config.name, hiddenCategories, setHiddenCategories]);
+  const {
+    hiddenCategories,
+    setHiddenCategories,
+    areaConfig: config,
+  } = useLocalStorageContext();
 
   const map = useMapEvents({
     layerremove: () => {
@@ -73,15 +62,18 @@ const LayerControl: React.FC<PropsWithChildren<LayerControlPropsType>> = ({
   };
 
   useEffect(() => {
-    if (hide) {
+    if (hide && config?.name) {
       const target = layers.find((item) => item.name === (hide as number));
       if (map?.hasLayer(target?.layer as Layer)) {
         map.removeLayer(target?.layer as Layer);
-        const mapHidden: number[] = hiddenCategories[config.name];
+        const mapHidden: number[] = config?.name
+          ? hiddenCategories[config?.name]
+          : [];
         mapHidden.push(hide);
-        setHiddenCategories((prev) => ({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setHiddenCategories((prev: any) => ({
           ...prev,
-          [config.name]: [...mapHidden],
+          [config?.name || '']: [...mapHidden],
         }));
         setLayers(
           layers.map((layer) => {
@@ -95,10 +87,13 @@ const LayerControl: React.FC<PropsWithChildren<LayerControlPropsType>> = ({
         );
       } else {
         map.addLayer(target?.layer as Layer);
-        const mapHidden = hiddenCategories[config.name].filter(
-          (item) => item !== hide
-        );
-        setHiddenCategories((prev) => ({
+        const mapHidden = config?.name
+          ? hiddenCategories[config.name].filter(
+              (item: number) => item !== hide
+            )
+          : [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setHiddenCategories((prev: any) => ({
           ...prev,
           [config.name]: [...mapHidden],
         }));
@@ -116,7 +111,7 @@ const LayerControl: React.FC<PropsWithChildren<LayerControlPropsType>> = ({
       setHide(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hide, setHide, map, layers, config.name]);
+  }, [hide, setHide, map, layers, config]);
 
   useEffect(() => {
     if (Object.keys(groupedLayers).length === 0) {

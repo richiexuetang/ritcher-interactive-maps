@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-
+import { Map } from 'leaflet';
 import React, { useEffect, useState } from 'react';
 import {
   FiChevronLeft,
@@ -10,30 +9,36 @@ import {
   FiSettings,
 } from 'react-icons/fi';
 
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
+import logger from '@/lib/logger';
 
 import TextButton from '@/components/buttons/TextButton';
-import CategoryGroup from '@/components/control/sidebar/CategoryGroup';
-import SearchResult from '@/components/control/sidebar/SearchResult';
-import Sidebar from '@/components/control/sidebar/Sidebar';
-import Tab from '@/components/control/sidebar/Tab';
+import {
+  CategoryGroup,
+  SearchResult,
+  Sidebar,
+  Tab,
+} from '@/components/control/sidebar';
 import UnderlineLink from '@/components/links/UnderlineLink';
 import Loader from '@/components/loader/Loader';
 
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 import { CategoryIdToCountT } from '@/types/category';
-import { AreaConfigType } from '@/types/config';
-import { LocationGroupType, LocationType } from '@/types/location';
+import {
+  LocationGroupType,
+  LocationType,
+  MarkerIdToMarkerRefT,
+} from '@/types/location';
 
 interface SidebarControlPropsType {
-  map: any;
+  map: Map | any;
   locationGroups: LocationGroupType[];
   setHide: React.Dispatch<React.SetStateAction<number | null>>;
   categoryCounts: CategoryIdToCountT;
-  config: AreaConfigType;
-  markerRefs: any;
+  markerRefs: MarkerIdToMarkerRefT;
   mapConfigInfo: any;
   searchResults: LocationType[];
-  setSearchResults: any;
+  setSearchResults: React.Dispatch<React.SetStateAction<LocationType[]>>;
 }
 
 const SidebarControl: React.FC<SidebarControlPropsType> = ({
@@ -41,25 +46,22 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   locationGroups,
   setHide,
   categoryCounts,
-  config,
   markerRefs,
-  mapConfigInfo,
   searchResults,
   setSearchResults,
 }) => {
+  const {
+    toggleHideCompleted,
+    userSettings,
+    toggleHidingCategories,
+    hiddenCategories,
+    setHiddenCategories,
+    areaConfig: config,
+  } = useLocalStorageContext();
+
   const [openTab, setOpenTab] = useState<string | boolean>('home');
   const [searching, setSearching] = useState<boolean>(false);
-  const font = mapConfigInfo?.font;
-  const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
-    'rm_hidden_categories',
-    {
-      defaultValue: { [config.name]: [] as number[] },
-    }
-  );
-
-  const [_, setUserSettings] = useLocalStorageState('rm_user_settings', {
-    defaultValue: { hideCompleted: true },
-  });
+  const font = config?.font;
 
   let prevGroup = '';
 
@@ -69,26 +71,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
 
   const onOpen = (id: string) => {
     setOpenTab(id);
-  };
-
-  const handleHideAll = () => {
-    const hiddenState = hiddenCategories[config.name] || ([] as number[]);
-    locationGroups.map((group) => {
-      if (!hiddenState?.includes(group?.categoryId)) {
-        hiddenState.push(group.categoryId);
-      }
-    });
-    setHiddenCategories((prev) => ({
-      ...prev,
-      [config.name]: [...hiddenState],
-    }));
-  };
-
-  const handleShowAll = () => {
-    setHiddenCategories((prev) => ({
-      ...prev,
-      [config.name]: [],
-    }));
   };
 
   const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -105,28 +87,21 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/marker/find?searchParam=` +
           searchParam +
-          `&mapSlug=${config.name}`
+          `&mapSlug=${config?.name}`
       );
       const json = await res.json();
       setSearchResults(json);
       setSearching(false);
-
-      // if (json.length) {
-      //   setSearchState("COMPLETE");
-      // } else {
-      //   setSearchState("NO RESULT");
-      // }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      logger(error);
     }
   };
 
   useEffect(() => {
-    if (!hiddenCategories[config.name]) {
-      setHiddenCategories((prev) => ({ ...prev, [config.name]: [] }));
+    if (config?.name && !hiddenCategories[config.name]) {
+      setHiddenCategories((prev: any) => ({ ...prev, [config.name]: [] }));
     }
-  }, [config.name, hiddenCategories, setHiddenCategories]);
+  }, [config, hiddenCategories, setHiddenCategories]);
 
   useEffect(() => {
     if (openTab !== 'search' && searchResults.length) {
@@ -153,33 +128,27 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           icon={<FiHome />}
           active
           font={font}
-          gameSlug={config.gameSlug}
+          gameSlug={config?.gameSlug}
         >
           <div className='flex flex-col'>
-            <div className='flex justify-between py-4'>
-              <TextButton className='text-primary-200' onClick={handleHideAll}>
-                Hide All
-              </TextButton>
-              <TextButton className='text-primary-200' onClick={handleShowAll}>
-                Show All
+            <div className='flex justify-center py-4'>
+              <TextButton
+                className='text-primary-200'
+                onClick={() =>
+                  toggleHidingCategories(config?.name, locationGroups)
+                }
+              >
+                {userSettings?.hideAllCategories ? 'Show All' : 'Hide All'}
               </TextButton>
             </div>
-            <div className='flex justify-between py-4'>
+            <div className='flex justify-center py-4'>
               <TextButton
                 className='text-primary-200'
-                onClick={() =>
-                  setUserSettings((prev) => ({ ...prev, hideCompleted: true }))
-                }
+                onClick={toggleHideCompleted}
               >
-                Hide Completed
-              </TextButton>
-              <TextButton
-                className='text-primary-200'
-                onClick={() =>
-                  setUserSettings((prev) => ({ ...prev, hideCompleted: false }))
-                }
-              >
-                Show Completed
+                {userSettings?.hideCompleted
+                  ? 'Show Completed'
+                  : 'Hide Completed'}
               </TextButton>
             </div>
           </div>
@@ -199,7 +168,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
                   setHide={setHide}
                   categoryCounts={categoryCounts}
                   currentGroup={currentGroup}
-                  config={config}
                 />
               );
             }
@@ -210,7 +178,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           header=''
           icon={<FiCompass />}
           font={font}
-          gameSlug={config.gameSlug}
+          gameSlug={config?.gameSlug}
         >
           <div className='mt-5 flex flex-col flex-wrap items-center justify-center gap-2 align-middle'>
             {config?.subSelections.map((selection) => {
@@ -231,7 +199,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           header=''
           icon={<FiSearch />}
           font={font}
-          gameSlug={config.gameSlug}
+          gameSlug={config?.gameSlug}
         >
           <div className='text-primary-600 focus-within:text-primary-400 relative mt-4'>
             <span className='absolute inset-y-0 left-0 flex items-center pl-2'>
@@ -269,7 +237,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
                 key={result._id}
                 result={result}
                 markerRef={markerRefs[result._id]}
-                config={config}
                 map={map.target}
               />
             ))}

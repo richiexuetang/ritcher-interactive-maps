@@ -44,6 +44,7 @@ export interface AreaConfigType {
   bounds: number[][];
   gameSlug: string;
   subSelections: AreaSelection[];
+  font?: string;
 }
 
 export interface CategoryItemsType {

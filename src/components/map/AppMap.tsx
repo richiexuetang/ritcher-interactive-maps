@@ -1,16 +1,16 @@
 import { LatLngBoundsExpression, LatLngExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/router';
+import React, { useMemo } from 'react';
 import { CircleMarker, LayerGroup, TileLayer, Tooltip } from 'react-leaflet';
-
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import MarkerClusterGroup from '@/components/layer/cluster/MarkerClusterGroup';
 import MapEventListener from '@/components/map/MapEventListener';
 
-import { AreaConfigType } from '@/types/config';
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 import {
   LocationGroupType,
   LocationType,
@@ -49,7 +49,6 @@ const RMMapContainer = dynamic(
 );
 
 const AppMap = (props: {
-  config: AreaConfigType;
   locations: LocationType[];
   locationGroups: LocationGroupType[];
   setMap: React.Dispatch<React.SetStateAction<Map | null>>;
@@ -60,10 +59,9 @@ const AppMap = (props: {
   pathMarkers: PathType[];
   searchResults: LocationType[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mapConfigInfo: any;
+  staticConfig: any;
 }) => {
   const {
-    config,
     locations,
     locationGroups,
     setMap,
@@ -73,36 +71,27 @@ const AppMap = (props: {
     textOverlay,
     pathMarkers,
     searchResults,
-    mapConfigInfo,
+    staticConfig,
   } = props;
+  const { hiddenCategories, areaConfig: config } = useLocalStorageContext();
 
-  const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
-    'rm_hidden_categories',
-    {
-      defaultValue: { [config.name]: [] },
-    }
-  );
-
-  useEffect(() => {
-    if (!hiddenCategories[config.name]) {
-      setHiddenCategories((prev) => ({ ...prev, [config.name]: [] }));
-    }
-  }, [config.name, hiddenCategories, setHiddenCategories]);
-
-  const mapHiddenCategories: number[] = hiddenCategories[config.name];
+  const router = useRouter();
+  const mapHiddenCategories: number[] = config?.name
+    ? hiddenCategories[config.name]
+    : [];
 
   const map = useMemo(() => {
     return (
-      <RMMapContainer config={config} setMap={setMap}>
+      <RMMapContainer setMap={setMap} staticConfig={staticConfig}>
         {() => (
           <>
             <MapEventListener />
             <TileLayer
-              url={`/tiles/${config.name}/{z}/{x}/{y}.png`}
+              url={`/tiles/${staticConfig?.name}/{z}/{x}/{y}.png`}
               noWrap
-              bounds={config.bounds as LatLngBoundsExpression}
+              bounds={staticConfig?.bounds as LatLngBoundsExpression}
             />
-            <LayerControl setHide={setHide} hide={hide} config={config}>
+            <LayerControl setHide={setHide} hide={hide}>
               {searchResults.length &&
                 searchResults.map((result, i) => (
                   <RMMarker
@@ -110,7 +99,6 @@ const AppMap = (props: {
                     markerRefs={markerRefs}
                     location={result}
                     rank={i}
-                    config={config}
                   />
                 ))}
               {!searchResults.length &&
@@ -146,9 +134,7 @@ const AppMap = (props: {
                                     markerRefs={markerRefs}
                                     location={location}
                                     rank={rank}
-                                    config={config}
                                     childPath={path}
-                                    font={mapConfigInfo?.font}
                                   />
                                 );
                               }
@@ -195,16 +181,7 @@ const AppMap = (props: {
       </RMMapContainer>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    hide,
-    config,
-    locationGroups,
-    setMap,
-    setHide,
-    locations,
-    mapHiddenCategories,
-    searchResults,
-  ]);
+  }, [hide, config, searchResults, router, hiddenCategories]);
 
   return map;
 };

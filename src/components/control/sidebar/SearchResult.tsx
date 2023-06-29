@@ -3,21 +3,20 @@ import { useEffect, useRef, useState } from 'react';
 
 import NextImage from '@/components/NextImage';
 
-import { AreaConfigType } from '@/types/config';
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
 import { LocationType } from '@/types/location';
 
 interface SearchResultPropsType {
   result: LocationType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markerRef: any;
-  config: AreaConfigType;
   map: Map;
 }
 
 const SearchResult: React.FC<SearchResultPropsType> = ({
   result,
   markerRef,
-  config,
   map,
 }) => {
   const {
@@ -32,8 +31,10 @@ const SearchResult: React.FC<SearchResultPropsType> = ({
   const [markerOverlays, setMarkerOverlays] = useState<any>({});
   const ref = useRef<HTMLDivElement | null>(null);
 
+  const { areaConfig: config } = useLocalStorageContext();
+
   const goToPosition = () => {
-    if (mapSlug === config.name) {
+    if (mapSlug === config?.name) {
       map.flyTo(coordinate as LatLngExpression, map.getZoom());
 
       markerRef?.openPopup();

@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 import clsxm from '@/lib/clsxm';
-import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import NextImage from '@/components/NextImage';
 
-import { CategoryIdToCountT, MapToCategoryIdCountT } from '@/types/category';
-import { AreaConfigType } from '@/types/config';
+import { useLocalStorageContext } from '@/context/localStorageContext';
+
+import { CategoryIdToCountT } from '@/types/category';
 import { LocationGroupType } from '@/types/location';
 
 interface CategoryGroupPropsType {
@@ -18,7 +18,6 @@ interface CategoryGroupPropsType {
   setHide: React.Dispatch<React.SetStateAction<number | null>>;
   categoryCounts: CategoryIdToCountT;
   currentGroup: LocationGroupType[];
-  config: AreaConfigType;
 }
 
 const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
@@ -26,61 +25,23 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
   setHide,
   categoryCounts,
   currentGroup,
-  config,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
-    'rm_hidden_categories',
-    {
-      defaultValue: { [config.name]: [] as number[] },
-    }
-  );
+  const {
+    hiddenCategories,
+    completedCount,
+    toggleGroupHiddenState,
+    areaConfig,
+  } = useLocalStorageContext();
 
-  const [completedCount] = useLocalStorageState('rm_completed_count', {
-    defaultValue: { [config.name]: {} } as MapToCategoryIdCountT,
-  });
+  const mapHiddenCategories: number[] = areaConfig?.name
+    ? hiddenCategories[areaConfig.name]
+    : [];
 
-  const handleGroupToggle = () => {
-    let numOfHidden = 0;
-    const currentCategories: number[] = [];
-    currentGroup.map((group) => {
-      numOfHidden = hiddenCategories[config.name].includes(group.categoryId)
-        ? numOfHidden + 1
-        : numOfHidden;
-      currentCategories.push(group.categoryId);
-    });
-
-    // all categories are hidden, toggle all to show
-    if (numOfHidden === currentGroup.length) {
-      let data = hiddenCategories[config.name];
-      currentCategories.map((category) => {
-        data = data.filter((item) => item !== category);
-      });
-
-      setHiddenCategories((prev) => ({
-        ...prev,
-        [config.name]: [...data],
-      }));
-    } else {
-      currentCategories.map((category) => {
-        if (!hiddenCategories[config.name].includes(category)) {
-          setHiddenCategories((prev) => ({
-            ...prev,
-            [config.name]: [...prev[config.name], category],
-          }));
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (!hiddenCategories[config.name]) {
-      setHiddenCategories((prev) => ({ ...prev, [config.name]: [] }));
-    }
-  }, [config.name, hiddenCategories, setHiddenCategories]);
-
-  const mapHiddenCategories: number[] = hiddenCategories[config.name];
+  if (!areaConfig) {
+    return null;
+  }
 
   return (
     <div className='text-primary-200 flex flex-col py-1 hover:cursor-pointer'>
@@ -91,7 +52,10 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
           <FiChevronDown className='mr-3' onClick={() => setCollapsed(true)} />
         )}
 
-        <div className='py-3' onClick={handleGroupToggle}>
+        <div
+          className='py-3'
+          onClick={() => toggleGroupHiddenState(currentGroup)}
+        >
           {group.toUpperCase()}
         </div>
       </div>
@@ -118,8 +82,9 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
                 {categoryIdNameMap[member.categoryId]}
               </p>
               <p className={clsxm([hiddenFlag && 'line-through	'])}>
-                {(completedCount[config.name] &&
-                  completedCount[config.name][member.categoryId]) ||
+                {(areaConfig.name &&
+                  completedCount[areaConfig?.name] &&
+                  completedCount[areaConfig?.name][member.categoryId]) ||
                   0}
                 /{categoryCounts[member.categoryId]}
               </p>
