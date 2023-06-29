@@ -3,6 +3,9 @@ import { LatLngExpression, Polyline } from 'leaflet';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Marker, useMap } from 'react-leaflet';
+import 'leaflet-contextmenu';
+
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
@@ -45,6 +48,13 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   const [completed, setCompleted] = useState(false);
   const [hideMarker, setHideMarker] = useState(false);
   const [triggerPopup, setTriggerPopup] = useState(false);
+
+  // const [value, copy] = useCopyToClipboard();
+
+  // const handleGetId = (e: any) => {
+  //   copy(`${location._id}`);
+  //   alert(location._id);
+  // };
 
   useEffect(() => {
     if (markerSearchParam && markerSearchParam === location._id) {

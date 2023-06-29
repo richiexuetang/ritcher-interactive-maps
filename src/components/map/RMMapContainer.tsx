@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useState } from 'react';
 import * as ReactLeaflet from 'react-leaflet';
 import '@/lib/leaflet/smooth-wheel-zoom.js';
 import 'leaflet-contextmenu';
@@ -21,9 +21,10 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
   children,
   config,
   setMap,
+  ...rest
 }) => {
   const [_, copy] = useCopyToClipboard();
-
+  const [mapZoom, setMapZoom] = useState<null | number>(null);
   const addMarker = (e: any) => {
     const newPos = e.latlng;
     copy(`${newPos.lat}, ${newPos.lng}`);
@@ -42,13 +43,6 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
       bounds={config.bounds}
       minZoom={config.minZoom}
       maxZoom={config.maxZoom}
-      contextMenu={true}
-      contextmenuItems={[
-        {
-          text: 'Add marker',
-          callback: (e: any) => addMarker(e),
-        },
-      ]}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       smoothWheelZoom={true}
@@ -56,8 +50,17 @@ const RMMapContainer: React.FC<MapContainerProp> = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       whenReady={(map) => setMap(map)}
+      contextmenu={true}
+      contextmenuWidth={140}
+      contextmenuItems={[
+        {
+          text: 'Add marker',
+          callback: (e: any) => addMarker(e),
+        },
+      ]}
+      {...rest}
     >
-      {children(ReactLeaflet)}
+      {children(ReactLeaflet, mapZoom, setMapZoom)}
     </MapContainer>
   );
 };

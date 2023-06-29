@@ -277,15 +277,10 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
         </Tab>
         <Tab
           id='settings'
-          header='Settings'
+          header=''
           icon={<FiSettings />}
           anchor='bottom'
-        >
-          <p>
-            The button for this tab can be anchored to the bottom by using the{' '}
-            <code>anchor="bottom"</code> props on the <code>Tab</code> component
-          </p>
-        </Tab>
+        ></Tab>
       </Sidebar>
     </section>
   );

@@ -120,7 +120,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
       {description && (
         <div
           key={_id}
-          className='text-primary-100 m-1'
+          className='text-primary-100 m-4'
           dangerouslySetInnerHTML={{
             __html: description,
           }}

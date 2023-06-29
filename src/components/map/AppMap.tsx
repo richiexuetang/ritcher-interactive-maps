@@ -8,6 +8,7 @@ import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import MarkerClusterGroup from '@/components/layer/cluster/MarkerClusterGroup';
+import MapEventListener from '@/components/map/MapEventListener';
 
 import { AreaConfigType } from '@/types/config';
 import {
@@ -92,6 +93,7 @@ const AppMap = (props: {
       <RMMapContainer config={config} setMap={setMap}>
         {() => (
           <>
+            <MapEventListener />
             <TileLayer
               url={`/tiles/${config.name}/{z}/{x}/{y}.png`}
               noWrap

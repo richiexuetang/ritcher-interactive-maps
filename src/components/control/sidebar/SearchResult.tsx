@@ -76,7 +76,7 @@ const SearchResult: React.FC<SearchResultPropsType> = ({
 
   return (
     <div
-      className='text-primary-100 border-t-2 border-t-black pb-1'
+      className='text-primary-200 border-t-2 border-t-black pb-1'
       ref={ref}
       onClick={goToPosition}
     >
