@@ -1,16 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LatLngBoundsExpression, LatLngExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useMemo } from 'react';
-import {
-  CircleMarker,
-  LayerGroup,
-  Marker,
-  TileLayer,
-  Tooltip,
-} from 'react-leaflet';
+import { CircleMarker, LayerGroup, TileLayer, Tooltip } from 'react-leaflet';
 
-import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 import useLocalStorageState from '@/lib/hooks/useLocalStorage';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
@@ -18,13 +10,15 @@ import { categoryIdNameMap } from '@/data/config/categoryItems';
 import MarkerClusterGroup from '@/components/layer/cluster/MarkerClusterGroup';
 
 import { AreaConfigType } from '@/types/config';
-import { LocationGroupType, LocationType } from '@/types/location';
+import {
+  LocationGroupType,
+  LocationType,
+  MarkerIdToMarkerRefT,
+  PathType,
+  TextOverlayType,
+} from '@/types/location';
 
 const RMMarker = dynamic(() => import('@/components/marker/RMMarker'), {
-  ssr: false,
-});
-
-const PathLayer = dynamic(() => import('@/components/layer/path/PathLayer'), {
   ssr: false,
 });
 
@@ -60,9 +54,9 @@ const AppMap = (props: {
   setMap: React.Dispatch<React.SetStateAction<Map | null>>;
   hide: number | null;
   setHide: React.Dispatch<React.SetStateAction<number | null>>;
-  markerRefs: any;
-  textOverlay: any;
-  pathMarkers: any;
+  markerRefs: MarkerIdToMarkerRefT[];
+  textOverlay: TextOverlayType[];
+  pathMarkers: PathType[];
   searchResults: LocationType[];
 }) => {
   const {
@@ -77,7 +71,6 @@ const AppMap = (props: {
     pathMarkers,
     searchResults,
   } = props;
-  const [_, copy] = useCopyToClipboard();
 
   const [hiddenCategories, setHiddenCategories] = useLocalStorageState(
     'rm_hidden_categories',
@@ -137,6 +130,9 @@ const AppMap = (props: {
                           {markerTypeId === 1 &&
                             ranks?.map((rank) => {
                               const location = locations[rank];
+                              const path = pathMarkers.find(
+                                (item) => item.parentId === location._id
+                              );
 
                               if (location?.coordinate) {
                                 return (
@@ -146,6 +142,7 @@ const AppMap = (props: {
                                     location={location}
                                     rank={rank}
                                     config={config}
+                                    childPath={path}
                                   />
                                 );
                               }
@@ -185,8 +182,7 @@ const AppMap = (props: {
             {!searchResults.length && (
               <>
                 <TextLayer textOverlay={textOverlay} markerRefs={markerRefs} />
-                <PathLayer pathMarkers={pathMarkers} config={config} />
-                <Marker
+                {/* <Marker
                   position={[0.6922458720270068, -0.6505778088279058]}
                   draggable
                   icon={L.icon({
@@ -200,7 +196,7 @@ const AppMap = (props: {
                       copy(`[${pos.lat}, ${pos.lng}]`);
                     },
                   }}
-                />
+                /> */}
               </>
             )}
           </>

@@ -1,6 +1,8 @@
-import { divIcon } from 'leaflet';
+import { divIcon, LatLngExpression } from 'leaflet';
 import { useState } from 'react';
 import { Marker, useMap, useMapEvents } from 'react-leaflet';
+
+import { MarkerIdToMarkerRefT } from '@/types/location';
 
 interface TextContainerPropsType {
   id: string;
@@ -9,7 +11,7 @@ interface TextContainerPropsType {
   maxZoom: number;
   content: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  markerRefs: any;
+  markerRefs: MarkerIdToMarkerRefT[] | any;
 }
 
 const TextContainer: React.FC<TextContainerPropsType> = ({
@@ -44,7 +46,7 @@ const TextContainer: React.FC<TextContainerPropsType> = ({
       {show ? (
         <Marker
           ref={(ref) => (markerRefs[id] = ref)}
-          position={[position[0], position[1]]}
+          position={position as LatLngExpression}
           icon={icon}
         />
       ) : null}

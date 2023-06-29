@@ -1,3 +1,5 @@
+import { Marker } from 'leaflet';
+
 export interface LocationType {
   markerTypeId: number;
   markerName: string;
@@ -32,4 +34,8 @@ export interface PathType {
   parentId: string;
   categoryId: number;
   id: string;
+}
+
+export interface MarkerIdToMarkerRefT {
+  [markerId: string]: Marker;
 }

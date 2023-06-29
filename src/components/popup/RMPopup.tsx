@@ -21,6 +21,7 @@ interface RMPopupPropsType {
   triggerPopup: boolean;
   setTriggerPopup: any;
   markerRefs: any;
+  hasChild?: boolean;
 }
 
 const RMPopup: React.FC<RMPopupPropsType> = ({
@@ -29,6 +30,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
   triggerPopup,
   setTriggerPopup,
   markerRefs,
+  hasChild,
 }) => {
   const [completed, setCompleted] = useLocalStorageState('rm_completed', {
     defaultValue: { [config.name]: [] as string[] } as MapToCompletedT,
@@ -52,6 +54,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     id: string
   ) => {
     const newCompleted = completed[config.name] || [];
+    const decrement = hasChild ? -2 : -1;
     if (!e.target.checked) {
       const lst = completed[config.name]?.filter((item) => item !== id) || [];
       setCompleted((prev) => ({ ...prev, [config.name]: [...lst] }));
@@ -59,18 +62,20 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
         ...prev,
         [config.name]: {
           ...prev[config.name],
-          [location.categoryId]: prev[config.name][location.categoryId] - 1,
+          [location.categoryId]:
+            prev[config.name][location.categoryId] + decrement,
         },
       }));
     } else {
       newCompleted.push(id);
+      const increment = hasChild ? 2 : 1;
       setCompleted((prev) => ({ ...prev, [config.name]: [...newCompleted] }));
       setCompletedCount((prev) => ({
         ...prev,
         [config.name]: {
           ...prev[config.name],
           [location.categoryId]:
-            prev[config.name][location.categoryId] + 1 || 1,
+            prev[config.name][location.categoryId] + increment || increment,
         },
       }));
     }
