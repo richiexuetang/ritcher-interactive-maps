@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { Popup } from 'react-leaflet';
 
+import { getFontClassName } from '@/lib/fonts';
 import useCopyToClipboard from '@/lib/hooks/useCopyToClipboard';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
@@ -35,6 +36,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     setCompleted,
     areaConfig: config,
   } = useLocalStorageContext();
+  const fontClassName = getFontClassName(config?.font);
 
   const { markerName, categoryId, _id, description } = location;
   const [checked, setChecked] = useState<boolean>(
@@ -101,8 +103,8 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
     <Popup className='rm-popup'>
       <div className='flex'>
         <div className='flex flex-col'>
-          <p className={`font-${config?.font} text-lg`}>{markerName}</p>
-          <p>{categoryIdNameMap[categoryId]}</p>
+          <h4 className={`${fontClassName}`}>{markerName}</h4>
+          <span>{categoryIdNameMap[categoryId]}</span>
         </div>
         <IconButton
           icon={FiLink}
@@ -114,7 +116,7 @@ const RMPopup: React.FC<RMPopupPropsType> = ({
       {description && (
         <div
           key={_id}
-          className='text-primary-100 m-4'
+          className='text-primary-200 m-2'
           dangerouslySetInnerHTML={{
             __html: description,
           }}

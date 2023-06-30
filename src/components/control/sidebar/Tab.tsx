@@ -18,13 +18,13 @@ const Tab = (props: any) => {
         </div>
       </h1>
       <div
-        className='item-center flex hover:cursor-pointer'
+        className='item-center flex justify-center hover:cursor-pointer'
         onClick={() => router.push('/game/' + props.gameSlug)}
       >
         <NextImage
           useSkeleton
           src={`/images/logos/${props.gameSlug}/logo.png`}
-          width='310'
+          width='350'
           height='60'
           alt='Icon'
         />

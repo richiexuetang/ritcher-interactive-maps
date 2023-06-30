@@ -136,7 +136,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
         >
           <div className='flex flex-col'>
             <hr />
-            <div className='my-5 flex flex-col flex-wrap items-center justify-center gap-2 align-middle'>
+            <div className='my-5 flex flex-wrap items-center justify-center gap-6 align-middle'>
               {config?.subSelections?.map((selection) => {
                 return (
                   <UnderlineLink
@@ -150,7 +150,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
               })}
             </div>
             <hr />
-            <div className='flex justify-center py-4'>
+            <div className='my-5 flex flex-wrap items-center justify-center gap-6 align-middle'>
               <TextButton
                 className='text-primary-200'
                 onClick={() =>
@@ -159,8 +159,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
               >
                 {userSettings?.hideAllCategories ? 'Show All' : 'Hide All'}
               </TextButton>
-            </div>
-            <div className='flex justify-center py-4'>
               <TextButton
                 className='text-primary-200'
                 onClick={toggleHideCompleted}

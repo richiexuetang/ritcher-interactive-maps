@@ -160,7 +160,7 @@ const AppMap = (props: {
                                       color={groupColor}
                                       radius={2}
                                     >
-                                      <Tooltip>
+                                      <Tooltip className='rm-tooltip'>
                                         {categoryIdNameMap[categoryId]}
                                       </Tooltip>
                                     </CircleMarker>

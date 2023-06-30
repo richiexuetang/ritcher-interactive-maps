@@ -27,6 +27,13 @@
   --color-primary-900: rgb(var(--tw-color-primary-900));
   --color-primary-900: rgb(var(--tw-color-primary-950)); /* #221c0f */
   /* #endregion  /**======== Primary Color =========== */
+
+  --leaflet-sidetabs-width-s: 305px;
+  --leaflet-sidetabs-width-m: 390px;
+  --leaflet-sidetabs-width-l: 460px;
+  --breakpoint-s: 768px;
+  --breakpoint-m: 992px;
+  --breakpoint-l: 1200px;
 }
 
 @layer base {
@@ -145,19 +152,22 @@
   width: 40px;
 }
 
-@media (min-width: $screen-small) and (max-width: $screen-medium) {
+@media (min-width: 768px) and (max-width: 992px) {
   .sidebar {
     width: var(--leaflet-sidetabs-width-s);
   }
+  .sidebar-pane {
+    min-width: 265px;
+  }
 }
 
-@media (min-width: $screen-medium) and (max-width: $screen-large) {
+@media (min-width: 992px) and (max-width: 1200px) {
   .sidebar {
     width: var(--leaflet-sidetabs-width-m);
   }
 }
 
-@media (min-width: $screen-large) {
+@media (min-width: 1200px) {
   .sidebar {
     width: var(--leaflet-sidetabs-width-l);
   }
@@ -346,9 +356,9 @@
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-  /* .sidebar-pane {
+  .sidebar-pane {
     min-width: 350px;
-  } */
+  }
   .sidebar-left ~ .sidebar-map .leaflet-left {
     left: 400px;
   }
@@ -358,9 +368,9 @@
 }
 
 @media (min-width: 1200px) {
-  /* .sidebar-pane {
+  .sidebar-pane {
     min-width: 420px;
-  } */
+  }
   .sidebar-left ~ .sidebar-map .leaflet-left {
     left: 470px;
   }
@@ -486,9 +496,19 @@
 }
 
 .rm-popup .leaflet-popup-content {
+  span {
+    margin-bottom: 0.5em;
+  }
   p {
-    margin: 0 !important;
+    margin-left: 0;
     line-height: 1.5em;
+  }
+  div {
+    margin: 0;
+    p {
+      line-height: 2;
+      font-size: 13px;
+    }
   }
 }
 
@@ -516,6 +536,13 @@
 
 .rm-popup .leaflet-popup-tip-container {
   background: transparent;
+}
+
+.rm-tooltip {
+  background: #221c0f !important;
+  border: 1px solid #584835 !important;
+  color: #af894d !important;
+  overflow: hidden;
 }
 
 .map-label {

@@ -2,7 +2,7 @@
 import { LatLngExpression, Polyline } from 'leaflet';
 import { useSearchParams } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Marker, useMap } from 'react-leaflet';
+import { Marker, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet-contextmenu';
 
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
@@ -184,6 +184,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
           markerRefs={markerRefs}
           hasChild={childPath?.categoryId === location.categoryId}
         />
+        <Tooltip className='rm-tooltip'>{location.markerName}</Tooltip>
       </Marker>
     </>
   ) : null;
