@@ -668,3 +668,9 @@
     flex-direction: column;
   }
 }
+
+.group-container div {
+  flex: 50%;
+  margin-bottom: 10px;
+  padding-right: 5px;
+}
