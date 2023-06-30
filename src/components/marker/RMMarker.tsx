@@ -78,7 +78,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   useEffect(() => {
     if (
       (userSettings.hideCompleted && completed) ||
-      hiddenCategories[areaConfig.name].includes(location.categoryId)
+      hiddenCategories[areaConfig.name]?.includes(location.categoryId)
     ) {
       setHideMarker(true);
     }
