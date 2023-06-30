@@ -1,5 +1,5 @@
 import { LatLngExpression, Map } from 'leaflet';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import NextImage from '@/components/NextImage';
 
@@ -12,12 +12,14 @@ interface SearchResultPropsType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markerRef: any;
   map: Map;
+  setTriggerPopupWithId: Dispatch<SetStateAction<string | null>>;
 }
 
 const SearchResult: React.FC<SearchResultPropsType> = ({
   result,
   markerRef,
   map,
+  setTriggerPopupWithId,
 }) => {
   const {
     _id: id,
@@ -35,9 +37,9 @@ const SearchResult: React.FC<SearchResultPropsType> = ({
 
   const goToPosition = () => {
     if (mapSlug === config?.name) {
-      map.flyTo(coordinate as LatLngExpression, map.getZoom());
-
+      map.panTo(coordinate as LatLngExpression);
       markerRef?.openPopup();
+      setTriggerPopupWithId(id);
     }
   };
 

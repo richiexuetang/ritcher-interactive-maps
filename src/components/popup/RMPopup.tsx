@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { Popup } from 'react-leaflet';
 
@@ -17,7 +17,7 @@ import { LocationType } from '@/types/location';
 interface RMPopupPropsType {
   location: LocationType;
   triggerPopup: boolean;
-  setTriggerPopup: any;
+  setTriggerPopup: Dispatch<SetStateAction<boolean>>;
   markerRefs: any;
   hasChild?: boolean;
 }

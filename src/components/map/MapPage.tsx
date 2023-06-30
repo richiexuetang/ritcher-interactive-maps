@@ -47,6 +47,10 @@ const MapPage: React.FC<MapPagePropsType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staticConfig, router]);
 
+  const [triggerPopupWithId, setTriggerPopupWithId] = useState<null | string>(
+    null
+  );
+
   return (
     <>
       {map && (
@@ -59,6 +63,7 @@ const MapPage: React.FC<MapPagePropsType> = ({
           mapConfigInfo={mapConfigInfo}
           searchResults={searchResults}
           setSearchResults={setSearchResults}
+          setTriggerPopupWithId={setTriggerPopupWithId}
         />
       )}
       <AppMap
@@ -72,6 +77,8 @@ const MapPage: React.FC<MapPagePropsType> = ({
         pathMarkers={pathMarkers}
         searchResults={searchResults}
         staticConfig={staticConfig}
+        triggerPopupWithId={triggerPopupWithId}
+        setTriggerPopupWithId={setTriggerPopupWithId}
       />
     </>
   );

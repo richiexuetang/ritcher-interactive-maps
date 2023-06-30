@@ -40,6 +40,7 @@ interface SidebarControlPropsType {
   mapConfigInfo: any;
   searchResults: LocationType[];
   setSearchResults: React.Dispatch<React.SetStateAction<LocationType[]>>;
+  setTriggerPopupWithId: any;
 }
 
 const SidebarControl: React.FC<SidebarControlPropsType> = ({
@@ -50,6 +51,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   markerRefs,
   searchResults,
   setSearchResults,
+  setTriggerPopupWithId,
 }) => {
   const {
     toggleHideCompleted,
@@ -86,15 +88,22 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/marker/find?searchParam=` +
+        `/api/marker/find?searchParam=` +
           searchParam +
-          `&mapSlug=${config?.name}`
+          `&mapSlug=${config?.name}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+        }
       );
       const json = await res.json();
       setSearchResults(json);
       setSearching(false);
     } catch (error) {
       logger(error);
+      setSearching(false);
     }
   };
 
@@ -249,6 +258,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
                 result={result}
                 markerRef={markerRefs[result._id]}
                 map={map.target}
+                setTriggerPopupWithId={setTriggerPopupWithId}
               />
             ))}
           </div>

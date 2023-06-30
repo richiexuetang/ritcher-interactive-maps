@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LatLngExpression, Polyline } from 'leaflet';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Marker, useMap } from 'react-leaflet';
 import 'leaflet-contextmenu';
 
@@ -21,6 +21,8 @@ interface RMMarkerPropsType {
   location: LocationType;
   rank: number;
   childPath?: PathType | undefined;
+  triggerPopupWithId?: string | null;
+  setTriggerPopupWithId?: Dispatch<SetStateAction<string | null>>;
 }
 
 const RMMarker: React.FC<RMMarkerPropsType> = ({
@@ -28,6 +30,8 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   location,
   rank,
   childPath,
+  triggerPopupWithId,
+  setTriggerPopupWithId,
 }) => {
   const { areaConfig: config } = useLocalStorageContext();
 
@@ -114,6 +118,15 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polylines, hideMarker]);
+
+  useEffect(() => {
+    if (triggerPopupWithId && location._id === triggerPopupWithId) {
+      setTriggerPopup(true);
+      if (setTriggerPopupWithId) {
+        setTriggerPopupWithId(null);
+      }
+    }
+  }, [triggerPopupWithId, location._id, setTriggerPopupWithId]);
 
   const getMarkerId = () => {
     copy(location._id);

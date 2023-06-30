@@ -1,7 +1,7 @@
 import { LatLngBoundsExpression, LatLngExpression, Map } from 'leaflet';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
 import { CircleMarker, LayerGroup, TileLayer, Tooltip } from 'react-leaflet';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
@@ -59,6 +59,8 @@ const AppMap = (props: {
   searchResults: LocationType[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   staticConfig: any;
+  triggerPopupWithId: null | string;
+  setTriggerPopupWithId: Dispatch<SetStateAction<string | null>>;
 }) => {
   const {
     locations,
@@ -71,6 +73,8 @@ const AppMap = (props: {
     pathMarkers,
     searchResults,
     staticConfig,
+    triggerPopupWithId,
+    setTriggerPopupWithId,
   } = props;
   const { hiddenCategories, areaConfig: config } = useLocalStorageContext();
 
@@ -97,6 +101,8 @@ const AppMap = (props: {
                     markerRefs={markerRefs}
                     location={result}
                     rank={i}
+                    triggerPopupWithId={triggerPopupWithId}
+                    setTriggerPopupWithId={setTriggerPopupWithId}
                   />
                 ))}
               {!searchResults.length &&
@@ -179,7 +185,7 @@ const AppMap = (props: {
       </RMMapContainer>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hide, config, searchResults, router, hiddenCategories]);
+  }, [hide, config, searchResults, router, hiddenCategories, markerRefs]);
 
   return map;
 };
