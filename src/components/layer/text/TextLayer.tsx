@@ -10,7 +10,6 @@ interface TextLayerPropsType {
   markerRefs: any;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TextLayer: React.FC<TextLayerPropsType> = (props) => {
   const { textOverlay, markerRefs } = props;
 

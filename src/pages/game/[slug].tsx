@@ -1,6 +1,8 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 
+import { getFontClassName } from '@/lib/fonts';
+
 import mapConfig from '@/data/config/mapConfig';
 
 import Layout from '@/components/layout/Layout';
@@ -45,6 +47,7 @@ const GamePage = ({
     e.preventDefault();
     router.push('/map/' + path);
   };
+  const fontClassName = getFontClassName(config?.font);
 
   return (
     <Layout>
@@ -53,9 +56,9 @@ const GamePage = ({
         faviconPath={config.name}
       />
       <div
-        className={`flex flex-col font-${config.font} bg-primary-300 h-screen items-center`}
+        className={`flex flex-col ${fontClassName} bg-primary-300 h-screen items-center`}
       >
-        <h1 className={`font-${config.font} pt-4`}>{config.title}</h1>
+        <h1 className={`${fontClassName} pt-4`}>{config.title}</h1>
         <div className='mt-8 flex flex-wrap justify-center'>
           {config.mapOptions.map((option: ImageDataType) => {
             return (

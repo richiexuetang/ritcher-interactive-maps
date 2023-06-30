@@ -7,7 +7,6 @@ import { CircleMarker, LayerGroup, TileLayer, Tooltip } from 'react-leaflet';
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
 import MarkerClusterGroup from '@/components/layer/cluster/MarkerClusterGroup';
-import MapEventListener from '@/components/map/MapEventListener';
 
 import { useLocalStorageContext } from '@/context/localStorageContext';
 
@@ -85,7 +84,6 @@ const AppMap = (props: {
       <RMMapContainer setMap={setMap} staticConfig={staticConfig}>
         {() => (
           <>
-            <MapEventListener />
             <TileLayer
               url={`/tiles/${staticConfig?.name}/{z}/{x}/{y}.png`}
               noWrap

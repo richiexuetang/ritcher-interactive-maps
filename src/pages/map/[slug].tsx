@@ -111,7 +111,7 @@ const RMMap = ({
   return (
     <LocalStorageContextProvider>
       <Seo
-        templateTitle={`Interactive Map | ${mapConfigInfo.name}`}
+        templateTitle={`Interactive Map | ${config.name}`}
         faviconPath={config.gameSlug}
       />
       {loading ? (
@@ -127,12 +127,6 @@ const RMMap = ({
           pathMarkers={pathMarkers}
         />
       )}
-
-      {/* {loading ? (
-        <Loader loading={loading as boolean} />
-      ) : (
-        
-      )} */}
     </LocalStorageContextProvider>
   );
 };

@@ -9,6 +9,7 @@ import {
   FiSettings,
 } from 'react-icons/fi';
 
+import { getFontClassName } from '@/lib/fonts';
 import logger from '@/lib/logger';
 
 import TextButton from '@/components/buttons/TextButton';
@@ -54,8 +55,6 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
     toggleHideCompleted,
     userSettings,
     toggleHidingCategories,
-    hiddenCategories,
-    setHiddenCategories,
     areaConfig: config,
   } = useLocalStorageContext();
 
@@ -64,6 +63,8 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   const font = config?.font;
 
   let prevGroup = '';
+
+  const fontClassName = getFontClassName(font);
 
   const onClose = () => {
     setOpenTab(false);
@@ -98,19 +99,13 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   };
 
   useEffect(() => {
-    if (config?.name && !hiddenCategories[config.name]) {
-      setHiddenCategories((prev: any) => ({ ...prev, [config.name]: [] }));
-    }
-  }, [config, hiddenCategories, setHiddenCategories]);
-
-  useEffect(() => {
     if (openTab !== 'search' && searchResults.length) {
       setSearchResults([]);
     }
   }, [openTab, searchResults.length, setSearchResults]);
 
   return (
-    <section className={`Sidebar font-${font}`}>
+    <section className={`Sidebar ${fontClassName}`}>
       <Sidebar
         id='sidebar'
         map={map}
@@ -181,7 +176,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           gameSlug={config?.gameSlug}
         >
           <div className='mt-5 flex flex-col flex-wrap items-center justify-center gap-2 align-middle'>
-            {config?.subSelections.map((selection) => {
+            {config?.subSelections?.map((selection) => {
               return (
                 <UnderlineLink
                   key={selection.name}

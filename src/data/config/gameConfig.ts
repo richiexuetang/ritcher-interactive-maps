@@ -5,12 +5,12 @@ export const gamesData: GameDataType[] = [
     name: 'The Witcher 3',
     path: 'witcher3',
     imagePath: 'https://i.ibb.co/CKcy4wT/witcher3.jpg',
-    font: 'witcher',
+    font: 'masonRegular',
   },
   {
     name: 'Tears of the Kingdom',
     path: 'totk',
     imagePath: 'https://i.ibb.co/4W2pXqB/totk.jpg',
-    font: 'hylia',
+    font: 'hyliaRegular',
   },
 ];

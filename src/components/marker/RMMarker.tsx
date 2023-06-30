@@ -14,11 +14,11 @@ import RMPopup from '@/components/popup/RMPopup';
 
 import { useLocalStorageContext } from '@/context/localStorageContext';
 
-import { PathType } from '@/types/location';
+import { LocationType, PathType } from '@/types/location';
 
 interface RMMarkerPropsType {
   markerRefs: any;
-  location: any;
+  location: LocationType;
   rank: number;
   childPath?: PathType | undefined;
 }
@@ -48,7 +48,7 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
 
   useEffect(() => {
     if (markerSearchParam && markerSearchParam === location._id) {
-      map.flyTo(location?.coordinate, map.getMaxZoom(), {
+      map.flyTo(location?.coordinate as LatLngExpression, map.getMaxZoom(), {
         animate: true,
         duration: 0.5,
       });
@@ -120,6 +120,8 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   };
 
   const copyMarkerCoordinate = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     copy(`${location.coordinate[0]}, ${location.coordinate[1]}`);
   };
 

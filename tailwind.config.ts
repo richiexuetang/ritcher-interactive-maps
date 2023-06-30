@@ -7,8 +7,8 @@ export default {
     extend: {
       fontFamily: {
         primary: ['Inter', ...defaultTheme.fontFamily.sans],
-        hylia: 'var(--font-hylia)',
-        witcher: 'var(--font-witcher)',
+        hyliaRegular: 'var(--font-hyliaRegular)',
+        masonRegular: 'var(--font-masonRegular)',
       },
       colors: {
         primary: {

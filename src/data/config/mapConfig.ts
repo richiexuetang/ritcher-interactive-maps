@@ -4,7 +4,7 @@ const mapConfig: ConfigDataType[] = [
   {
     name: 'witcher3',
     title: 'The Witcher 3: Wild Hunt',
-    font: 'witcher',
+    font: 'masonRegular',
     mapOptions: [
       {
         name: 'White Orchard',
@@ -36,7 +36,7 @@ const mapConfig: ConfigDataType[] = [
   {
     name: 'totk',
     title: 'The Legend of Zelda: Tears of the Kingdom',
-    font: 'hylia',
+    font: 'hyliaRegular',
     mapOptions: [
       {
         name: 'Hyrule Sky',
