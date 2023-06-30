@@ -126,6 +126,21 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
           gameSlug={config?.gameSlug}
         >
           <div className='flex flex-col'>
+            <hr />
+            <div className='my-5 flex flex-col flex-wrap items-center justify-center gap-2 align-middle'>
+              {config?.subSelections?.map((selection) => {
+                return (
+                  <UnderlineLink
+                    key={selection.name}
+                    href={`/map/${selection.to}`}
+                    className='text-primary-200'
+                  >
+                    {selection.name}
+                  </UnderlineLink>
+                );
+              })}
+            </div>
+            <hr />
             <div className='flex justify-center py-4'>
               <TextButton
                 className='text-primary-200'
@@ -147,6 +162,7 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
               </TextButton>
             </div>
           </div>
+          <hr />
           {locationGroups.map(({ group, categoryId }) => {
             if (group !== prevGroup) {
               prevGroup = group;
