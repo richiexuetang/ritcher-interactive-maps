@@ -30,7 +30,7 @@ const PathDecorator: React.FC<PathDecoratorProps> = ({
 
     setPolylines((prev: any) => [...prev, decorator, path]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map]);
+  }, [map, polyline]);
 
   return null;
 };

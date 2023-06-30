@@ -37,10 +37,9 @@ interface SidebarControlPropsType {
   setHide: React.Dispatch<React.SetStateAction<number | null>>;
   categoryCounts: CategoryIdToCountT;
   markerRefs: MarkerIdToMarkerRefT;
-  mapConfigInfo: any;
   searchResults: LocationType[];
   setSearchResults: React.Dispatch<React.SetStateAction<LocationType[]>>;
-  setTriggerPopupWithId: any;
+  setTriggerPopupWithId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const SidebarControl: React.FC<SidebarControlPropsType> = ({
@@ -108,10 +107,11 @@ const SidebarControl: React.FC<SidebarControlPropsType> = ({
   };
 
   useEffect(() => {
-    if (openTab !== 'search' && searchResults.length) {
+    if (openTab !== 'search') {
       setSearchResults([]);
     }
-  }, [openTab, searchResults.length, setSearchResults]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openTab]);
 
   return (
     <section className={`Sidebar ${fontClassName}`}>

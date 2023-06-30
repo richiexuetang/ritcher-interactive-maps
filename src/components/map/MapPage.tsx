@@ -60,7 +60,6 @@ const MapPage: React.FC<MapPagePropsType> = ({
           setHide={setHide}
           categoryCounts={categoryCounts}
           markerRefs={markerRefs}
-          mapConfigInfo={mapConfigInfo}
           searchResults={searchResults}
           setSearchResults={setSearchResults}
           setTriggerPopupWithId={setTriggerPopupWithId}

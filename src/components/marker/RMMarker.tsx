@@ -33,16 +33,18 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   triggerPopupWithId,
   setTriggerPopupWithId,
 }) => {
-  const { areaConfig: config } = useLocalStorageContext();
-
   const map = useMap();
   const params = useSearchParams();
   const markerSearchParam = params.get('markerId');
 
   const [polylines, setPolylines] = useState<Polyline[] | any[]>([]);
 
-  const { completed: completedMarkers, userSettings } =
-    useLocalStorageContext();
+  const {
+    completed: completedMarkers,
+    userSettings,
+    areaConfig,
+    hiddenCategories,
+  } = useLocalStorageContext();
 
   const [completed, setCompleted] = useState(false);
   const [hideMarker, setHideMarker] = useState(false);
@@ -58,29 +60,33 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
       });
 
       setTriggerPopup(true);
-      window.history.replaceState(null, '', `/map/${config?.name}`);
+      window.history.replaceState(null, '', `/map/${areaConfig?.name}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markerSearchParam]);
 
   useEffect(() => {
     if (
-      config?.name &&
-      completedMarkers[config.name]?.includes(location._id) &&
+      areaConfig?.name &&
+      completedMarkers[areaConfig.name]?.includes(location._id) &&
       !completed
     ) {
       setCompleted(true);
     }
-  }, [completedMarkers, completed, setCompleted, location._id, config]);
+  }, [completedMarkers, completed, setCompleted, location._id, areaConfig]);
 
   useEffect(() => {
-    if (userSettings.hideCompleted && completed) {
+    if (
+      (userSettings.hideCompleted && completed) ||
+      hiddenCategories[areaConfig.name].includes(location.categoryId)
+    ) {
       setHideMarker(true);
     }
     if (!userSettings.hideCompleted) {
       setHideMarker(false);
     }
-  }, [userSettings, completed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userSettings, completed, hiddenCategories]);
 
   const arrow = [
     {
@@ -108,16 +114,15 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
   ];
 
   useEffect(() => {
-    if (polylines.length && hideMarker) {
-      polylines.map((polyline) => {
+    if (polylines?.length && hideMarker) {
+      polylines?.map((polyline) => {
         if (map.hasLayer(polyline)) {
           map.removeLayer(polyline);
         }
       });
       setPolylines([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [polylines, hideMarker]);
+  }, [polylines, hideMarker, hiddenCategories, map, childPath?.path]);
 
   useEffect(() => {
     if (triggerPopupWithId && location._id === triggerPopupWithId) {
