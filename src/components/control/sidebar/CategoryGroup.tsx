@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiMinus, FiPlus } from 'react-icons/fi';
 
 import clsxm from '@/lib/clsxm';
 
@@ -47,9 +47,9 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
     <div className='text-primary-200 flex flex-col py-1 hover:cursor-pointer'>
       <div className='flex items-center'>
         {collapsed ? (
-          <FiChevronUp className='mr-3' onClick={() => setCollapsed(false)} />
+          <FiPlus className='mr-3' onClick={() => setCollapsed(false)} />
         ) : (
-          <FiChevronDown className='mr-3' onClick={() => setCollapsed(true)} />
+          <FiMinus className='mr-3' onClick={() => setCollapsed(true)} />
         )}
 
         <div
