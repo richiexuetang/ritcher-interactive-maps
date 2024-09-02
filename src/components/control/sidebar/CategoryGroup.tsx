@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
-import clsxm from '@/lib/clsxm';
+import clsx from '@/lib/clsxm';
 
 import { categoryIdNameMap } from '@/data/config/categoryItems';
 
@@ -79,10 +79,10 @@ const CategoryGroup: React.FC<CategoryGroupPropsType> = ({
                   fallbackSrc={`/images/icons/${group}.png`}
                   className='w-auto'
                 />
-                <p className={clsxm([hiddenFlag && 'line-through	'])}>
+                <p className={clsx([hiddenFlag && 'line-through	'])}>
                   {categoryIdNameMap[member.categoryId]}
                 </p>
-                <p className={clsxm([hiddenFlag && 'line-through	'])}>
+                <p className={clsx([hiddenFlag && 'line-through	'])}>
                   {(areaConfig.name &&
                     completedCount[areaConfig?.name] &&
                     completedCount[areaConfig?.name][member.categoryId]) ||

@@ -335,6 +335,19 @@ const areaConfig: AreaConfigType[] = [
       },
     ],
   },
+  {
+    name: 'chapter-2',
+    maxZoom: 10,
+    minZoom: 10,
+    zoom: 10,
+    center: [83.93, -168.15],
+    bounds: [
+      [0, -1000],
+      [1000, 1000],
+    ],
+    gameSlug: 'black-myth',
+    subSelections: [],
+  },
 ];
 
 export default areaConfig;

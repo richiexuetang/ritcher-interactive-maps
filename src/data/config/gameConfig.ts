@@ -13,4 +13,10 @@ export const gamesData: GameDataType[] = [
     imagePath: 'https://i.ibb.co/4W2pXqB/totk.jpg',
     font: 'hyliaRegular',
   },
+  {
+    name: 'Black Myth: Wukong',
+    path: 'black-myth',
+    imagePath: 'https://i.ibb.co/RDN1ZvK/images.jpg',
+    font: 'Crimson',
+  },
 ];

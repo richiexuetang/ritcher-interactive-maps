@@ -55,6 +55,18 @@ const mapConfig: ConfigDataType[] = [
       },
     ],
   },
+  {
+    name: 'black-myth',
+    title: 'Black Myth: WuKong',
+    font: 'hyliaRegular',
+    mapOptions: [
+      {
+        name: 'Yellow Sand, Desolate Dusk',
+        path: 'chapter-2',
+        imagePath: 'https://i.ibb.co/Mpv8gNt/hyrule-sky.webp',
+      },
+    ],
+  },
 ];
 
 export default mapConfig;

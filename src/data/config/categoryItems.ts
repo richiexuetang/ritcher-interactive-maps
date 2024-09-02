@@ -353,4 +353,38 @@ export const categoryItemsConfig = [
       },
     ],
   },
+  {
+    gameSlug: 'black-myth',
+    mapSlugs: ['chapter-2'],
+    categoryGroups: [
+      {
+        name: 'locations',
+        groupType: 1,
+        members: [
+          1, 5, 12, 13, 15, 18, 19, 26, 27, 31, 32, 34, 35, 36, 37, 38, 44, 45,
+          46, 47, 49, 25,
+        ],
+      },
+      {
+        name: 'services',
+        groupType: 1,
+        members: [2, 3, 4, 6, 7, 8, 14, 16, 21, 24, 43],
+      },
+      {
+        name: 'quests',
+        groupType: 1,
+        members: [10, 20, 22, 23, 29, 42, 48],
+      },
+      {
+        name: 'items',
+        groupType: 1,
+        members: [9, 11, 17, 33, 39, 40, 50],
+      },
+      {
+        name: 'other',
+        groupType: 1,
+        members: [30, 51],
+      },
+    ],
+  },
 ];

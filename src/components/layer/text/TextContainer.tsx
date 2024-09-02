@@ -45,6 +45,8 @@ const TextContainer: React.FC<TextContainerPropsType> = ({
     <>
       {show ? (
         <Marker
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           ref={(ref) => (markerRefs[id] = ref)}
           position={position as LatLngExpression}
           icon={icon}

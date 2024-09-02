@@ -153,6 +153,8 @@ const RMMarker: React.FC<RMMarkerPropsType> = ({
         />
       )}
       <Marker
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         ref={(ref) => (markerRefs[location._id] = ref)}
         opacity={completed ? 0.5 : 1}
         position={location.coordinate as LatLngExpression}
